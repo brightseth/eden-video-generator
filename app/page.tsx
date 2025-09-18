@@ -69,6 +69,8 @@ export default function CompactVideoPromptGenerator() {
   const [generationStatus, setGenerationStatus] = useState<string>('');
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string>('');
   const [generationError, setGenerationError] = useState<string>('');
+  const [generationMode, setGenerationMode] = useState<'manual' | 'automated'>('manual');
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
 
   const agentProfiles = {
     solienne: {
@@ -182,6 +184,8 @@ ${showEnhancement ? '\n## ENHANCED WITH AGENT INTELLIGENCE\n' + getEnhancement()
 
   const copyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(generatePrompt());
+    setCopiedToClipboard(true);
+    setTimeout(() => setCopiedToClipboard(false), 2000);
   }, [generatePrompt]);
 
   const exportPrompt = () => {
@@ -581,26 +585,101 @@ ${showEnhancement ? '\n## ENHANCED WITH AGENT INTELLIGENCE\n' + getEnhancement()
               </h3>
             </div>
             <div className="p-3 space-y-3">
-              {/* Generate Button */}
-              <button
-                onClick={generateWithEden}
-                disabled={isGenerating}
-                className={`w-full eden-button py-3 flex items-center justify-center ${
-                  isGenerating ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    GENERATING...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    GENERATE WITH EDEN
-                  </>
-                )}
-              </button>
+              {/* Mode Toggle */}
+              <div className="flex gap-2 p-1 bg-black/60 rounded border border-white/10">
+                <button
+                  onClick={() => setGenerationMode('manual')}
+                  className={`flex-1 py-2 px-3 rounded text-xs helvetica-small-bold transition-colors ${
+                    generationMode === 'manual'
+                      ? 'bg-white text-black'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  MANUAL
+                </button>
+                <button
+                  onClick={() => setGenerationMode('automated')}
+                  className={`flex-1 py-2 px-3 rounded text-xs helvetica-small-bold transition-colors flex items-center justify-center gap-1 ${
+                    generationMode === 'automated'
+                      ? 'bg-white text-black'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  AUTOMATED
+                  <span className="text-[10px] bg-red-500 text-white px-1 rounded">BETA</span>
+                </button>
+              </div>
+
+              {/* Manual Mode */}
+              {generationMode === 'manual' ? (
+                <>
+                  <div className="border border-white/20 rounded p-3 bg-black/60">
+                    <p className="helvetica-micro-bold text-white mb-2">
+                      MANUAL MODE
+                    </p>
+                    <p className="helvetica-micro text-white/60 mb-3">
+                      Copy the prompt and paste into Eden manually
+                    </p>
+                    <button
+                      onClick={copyToClipboard}
+                      className="w-full eden-button py-2 flex items-center justify-center"
+                    >
+                      {copiedToClipboard ? (
+                        <>
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          COPIED!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4 mr-2" />
+                          COPY PROMPT
+                        </>
+                      )}
+                    </button>
+                    <a
+                      href="https://app.eden.art/create/video"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full eden-button py-2 flex items-center justify-center mt-2"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      OPEN EDEN
+                    </a>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Automated Mode */}
+                  <div className="border border-yellow-500/20 rounded p-3 bg-yellow-900/10 mb-3">
+                    <p className="helvetica-micro-bold text-yellow-400 mb-1">
+                      BETA FEATURE
+                    </p>
+                    <p className="helvetica-micro text-yellow-400/80">
+                      Direct API generation may have rate limits or errors
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={generateWithEden}
+                    disabled={isGenerating}
+                    className={`w-full eden-button py-3 flex items-center justify-center ${
+                      isGenerating ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        GENERATING...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        GENERATE WITH EDEN API
+                      </>
+                    )}
+                  </button>
+                </>
+              )}
 
               {/* Status Display */}
               {generationStatus && (

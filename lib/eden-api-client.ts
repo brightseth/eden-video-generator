@@ -67,13 +67,25 @@ class EdenAPIClient {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to create task: ${response.statusText}`);
+        const errorData = await response.json().catch(() => ({ error: response.statusText }));
+        throw new Error(errorData.error || `Failed to create task: ${response.statusText}`);
       }
 
       const data = await response.json();
+      if (!data.taskId) {
+        console.error('Invalid response from API:', data);
+        throw new Error('Invalid response: No task ID returned');
+      }
       return data.taskId;
     } catch (error) {
       console.error('Error creating video task:', error);
+      // Provide more helpful error messages
+      if (error instanceof Error && error.message.includes('401')) {
+        throw new Error('Invalid API key. Please check your Eden API credentials.');
+      }
+      if (error instanceof Error && error.message.includes('429')) {
+        throw new Error('Rate limit exceeded. Please try again in a few minutes.');
+      }
       throw error;
     }
   }
