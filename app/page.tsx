@@ -51,7 +51,8 @@ export default function CompactVideoPromptGenerator() {
     vocal: true,
     musicPromptSupplement: '',
     speechRate: 1.0,
-    voiceName: 'Bob',
+    voiceGender: 'neutral',
+    voiceAge: 'middle',
     exportFormats: true,
     includeSubtitles: true,
     referenceImages: 2,
@@ -233,6 +234,13 @@ export default function CompactVideoPromptGenerator() {
       prompt += `, ${config.musicPromptSupplement}`;
     }
     prompt += config.vocal ? ', with vocals' : ', instrumental only';
+
+    // Add voice characteristics
+    if (config.vocal) {
+      const voiceGender = config.voiceGender === 'neutral' ? 'neutral gender' : config.voiceGender;
+      const voiceAge = config.voiceAge === 'middle' ? 'middle-aged' : config.voiceAge;
+      prompt += `\nVoice: ${voiceGender}, ${voiceAge}`;
+    }
 
     // Add character if included
     if (config.includeCharacter && config.characterLora) {
@@ -473,15 +481,27 @@ export default function CompactVideoPromptGenerator() {
                     </select>
                   </div>
                   <div>
-                    <label className="eden-label">VOICE</label>
+                    <label className="eden-label">VOICE GENDER</label>
                     <select
                       className="eden-select"
-                      value={config.voiceName}
-                      onChange={(e) => handleInputChange('voiceName', e.target.value)}
+                      value={config.voiceGender}
+                      onChange={(e) => handleInputChange('voiceGender', e.target.value)}
                     >
-                      <option value="Bob">BOB</option>
-                      <option value="Alice">ALICE</option>
-                      <option value="Charlie">CHARLIE</option>
+                      <option value="neutral">NEUTRAL</option>
+                      <option value="male">MALE</option>
+                      <option value="female">FEMALE</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="eden-label">VOICE AGE</label>
+                    <select
+                      className="eden-select"
+                      value={config.voiceAge}
+                      onChange={(e) => handleInputChange('voiceAge', e.target.value)}
+                    >
+                      <option value="young">YOUNG</option>
+                      <option value="middle">MIDDLE</option>
+                      <option value="old">OLD</option>
                     </select>
                   </div>
                 </div>
