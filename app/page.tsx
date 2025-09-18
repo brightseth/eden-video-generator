@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Film, Copy, Download,
-  Sparkles, Brain, Zap, Eye, BookOpen, Award, Video, Loader2, CheckCircle, AlertCircle
+  Sparkles, Brain, Zap, Eye, BookOpen, Video, Loader2, CheckCircle, AlertCircle
 } from 'lucide-react';
 import { edenAPIClient } from '@/lib/eden-api-client';
 
@@ -58,7 +58,6 @@ export default function CompactVideoPromptGenerator() {
     referenceImages: 2,
   });
 
-  const [promptScore, setPromptScore] = useState(0);
   const [activeTab, setActiveTab] = useState<'story' | 'visual' | 'production'>('story');
   const [selectedTemplate, setSelectedTemplate] = useState<{
     id: string;
@@ -152,42 +151,6 @@ export default function CompactVideoPromptGenerator() {
 
   const selectedAgent = agentProfiles[config.agentType as keyof typeof agentProfiles];
 
-  // Score the prompt quality
-  useEffect(() => {
-    const scorePrompt = () => {
-      let score = 0;
-
-      // Basic completeness (40 points)
-      if (config.storyLength > 50) score += 10;
-      if (config.customSource || config.contentSource !== 'custom') score += 10;
-      if (config.styleDescription.length > 20) score += 10;
-      if (config.numberOfClips > 5) score += 10;
-
-      // Advanced settings (30 points)
-      if (config.includeCharacter) score += 10;
-      if (config.characterLora) score += 10;
-      if (config.musicPromptSupplement) score += 10;
-
-      // Agent-specific scoring (30 points)
-      const keywords = {
-        solienne: ['consciousness', 'digital', 'emergence', 'transformation'],
-        miyomi: ['market', 'probability', 'contrarian', 'alpha'],
-        geppetto: ['narrative', 'story', 'character', 'structure'],
-        abraham: ['collective', 'wisdom', 'covenant', 'unity']
-      };
-
-      const agentKeywords = keywords[config.agentType as keyof typeof keywords] || [];
-      const allText = `${config.customSource} ${config.styleDescription} ${config.musicPromptSupplement}`.toLowerCase();
-
-      agentKeywords.forEach(keyword => {
-        if (allText.includes(keyword)) score += 7.5;
-      });
-
-      setPromptScore(Math.min(100, Math.round(score)));
-    };
-
-    scorePrompt();
-  }, [config]);
 
   const handleInputChange = (field: string, value: string | number | boolean) => {
     setConfig(prev => ({ ...prev, [field]: value }));
@@ -332,11 +295,7 @@ export default function CompactVideoPromptGenerator() {
                 <span className="helvetica-small-bold text-white">{selectedAgent.name}</span>
               </div>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-white/60" />
-                <span className="helvetica-micro-bold text-white">SCORE: {promptScore}/100</span>
-              </div>
+            <div className="flex items-center gap-4">
               <button onClick={copyToClipboard} className="eden-button py-1 px-3">
                 <Copy className="w-4 h-4 mr-2" />
                 COPY
@@ -368,12 +327,8 @@ export default function CompactVideoPromptGenerator() {
                 <option value="miyomi">MIYOMI - MARKETS</option>
                 <option value="geppetto">GEPPETTO - NARRATIVE</option>
                 <option value="abraham">ABRAHAM - COLLECTIVE</option>
-                <option value="bertha">BERTHA - ANALYSIS</option>
                 <option value="koru">KORU - COMMUNITY</option>
-                <option value="citizen">CITIZEN - GOVERNANCE</option>
                 <option value="sue">SUE - CURATION</option>
-                <option value="verdelis">VERDELIS - ENVIRONMENT</option>
-                <option value="bart">BART - VIDEO</option>
               </select>
 
               {/* Templates */}
