@@ -158,28 +158,42 @@ export default function CompactVideoPromptGenerator() {
   }, [config.agentType]);
 
   const generatePrompt = useCallback(() => {
-    return `# ${selectedAgent.name} Video Generation Prompt
+    // Generate a more Eden-friendly prompt format
+    const duration = config.clipDuration * config.numberOfClips;
 
-## Configuration
-- Agent: ${selectedAgent.name} - ${selectedAgent.description}
-- Content Source: ${config.contentSource}
-- Story Length: ${config.storyLength} words
-- Aspect Ratio: ${config.aspectRatio}
-- Duration: ${config.clipDuration}s × ${config.numberOfClips} clips
+    let prompt = `Create a ${duration}-second video for ${selectedAgent.name} (${selectedAgent.description})`;
 
-## Narrative Style
-${config.narrativeStyle}
+    // Add custom source if provided
+    if (config.contentSource === 'custom' && config.customSource) {
+      prompt += `\n\nContext: ${config.customSource}`;
+    }
 
-## Visual Direction
-${config.styleDescription}
+    // Core visual prompt
+    prompt += `\n\nVisual Style: ${config.styleDescription}`;
+    prompt += `\nAspect Ratio: ${config.aspectRatio}`;
+    prompt += `\nNarrative: ${config.narrativeStyle} approach, ${config.genre} genre`;
 
-## Audio Configuration
-- Music Style: ${config.songStyle}
-- Vocals: ${config.vocal ? 'Yes' : 'No'}
-- Speech Rate: ${config.speechRate}x
-- Voice: ${config.voiceName}
+    // Add music/audio
+    prompt += `\n\nMusic: ${config.songStyle} style`;
+    if (config.musicPromptSupplement) {
+      prompt += `, ${config.musicPromptSupplement}`;
+    }
+    prompt += config.vocal ? ', with vocals' : ', instrumental only';
 
-${showEnhancement ? '\n## ENHANCED WITH AGENT INTELLIGENCE\n' + getEnhancement() : ''}`;
+    // Add character if included
+    if (config.includeCharacter && config.characterLora) {
+      prompt += `\n\nCharacter LoRA: ${config.characterLora}`;
+    }
+
+    // Add agent enhancement
+    if (showEnhancement) {
+      prompt += `\n\n${getEnhancement()}`;
+    }
+
+    // Add technical specs at the end
+    prompt += `\n\nTechnical: ${config.numberOfClips} clips, ${config.clipDuration}s each, ${config.imageQuality} quality`;
+
+    return prompt;
   }, [selectedAgent, config, showEnhancement, getEnhancement]);
 
   const copyToClipboard = useCallback(() => {
@@ -557,21 +571,32 @@ ${showEnhancement ? '\n## ENHANCED WITH AGENT INTELLIGENCE\n' + getEnhancement()
           <div className="border-t border-white/10 p-4">
             <div className="flex items-center justify-between mb-2">
               <h3 className="helvetica-small-bold text-white">PROMPT PREVIEW</h3>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={showEnhancement}
-                  onChange={(e) => setShowEnhancement(e.target.checked)}
-                  className="mr-2"
-                />
-                <span className="helvetica-micro text-white/60">ENHANCE WITH AI</span>
-              </label>
+              <div className="flex items-center gap-3">
+                <span className="helvetica-micro text-white/40">
+                  {generatePrompt().length} chars
+                </span>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={showEnhancement}
+                    onChange={(e) => setShowEnhancement(e.target.checked)}
+                    className="mr-2"
+                  />
+                  <span className="helvetica-micro text-white/60">ENHANCE</span>
+                </label>
+              </div>
             </div>
             <div className="bg-black/60 border border-white/10 p-3 rounded max-h-32 overflow-y-auto">
-              <pre className="helvetica-micro text-white/80 whitespace-pre-wrap">
+              <pre className="helvetica-micro text-white/80 whitespace-pre-wrap font-mono">
                 {generatePrompt()}
               </pre>
             </div>
+            {copiedToClipboard && (
+              <div className="mt-2 flex items-center gap-2 text-green-400">
+                <CheckCircle className="w-3 h-3" />
+                <span className="helvetica-micro">Ready to paste in Eden!</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -613,38 +638,79 @@ ${showEnhancement ? '\n## ENHANCED WITH AGENT INTELLIGENCE\n' + getEnhancement()
               {/* Manual Mode */}
               {generationMode === 'manual' ? (
                 <>
-                  <div className="border border-white/20 rounded p-3 bg-black/60">
-                    <p className="helvetica-micro-bold text-white mb-2">
-                      MANUAL MODE
-                    </p>
-                    <p className="helvetica-micro text-white/60 mb-3">
-                      Copy the prompt and paste into Eden manually
-                    </p>
-                    <button
-                      onClick={copyToClipboard}
-                      className="w-full eden-button py-2 flex items-center justify-center"
-                    >
-                      {copiedToClipboard ? (
-                        <>
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                          COPIED!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-4 h-4 mr-2" />
-                          COPY PROMPT
-                        </>
-                      )}
-                    </button>
-                    <a
-                      href="https://app.eden.art/create/video"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full eden-button py-2 flex items-center justify-center mt-2"
-                    >
-                      <Sparkles className="w-4 h-4 mr-2" />
-                      OPEN EDEN
-                    </a>
+                  <div className="space-y-3">
+                    {/* Step 1: Copy */}
+                    <div className="border border-white/20 rounded p-3 bg-black/60">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="helvetica-micro-bold text-white">
+                          STEP 1: COPY PROMPT
+                        </p>
+                        {copiedToClipboard && (
+                          <CheckCircle className="w-4 h-4 text-green-400" />
+                        )}
+                      </div>
+                      <button
+                        onClick={copyToClipboard}
+                        className={`w-full eden-button py-2 flex items-center justify-center ${
+                          copiedToClipboard ? 'bg-green-900/20 border-green-400' : ''
+                        }`}
+                      >
+                        {copiedToClipboard ? (
+                          <>
+                            <CheckCircle className="w-4 h-4 mr-2" />
+                            COPIED TO CLIPBOARD!
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-4 h-4 mr-2" />
+                            COPY FULL PROMPT
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Step 2: Open Eden */}
+                    <div className="border border-white/20 rounded p-3 bg-black/60">
+                      <p className="helvetica-micro-bold text-white mb-2">
+                        STEP 2: OPEN EDEN
+                      </p>
+                      <div className="space-y-2">
+                        <a
+                          href="https://app.eden.art"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full eden-button py-2 flex items-center justify-center"
+                        >
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          OPEN EDEN APP
+                        </a>
+                        <div className="flex gap-2">
+                          <a
+                            href="https://app.eden.art/create/video"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 text-center py-1 text-xs border border-white/20 rounded text-white/60 hover:text-white hover:border-white/40 transition-colors"
+                          >
+                            Video
+                          </a>
+                          <a
+                            href="https://app.eden.art/create/image"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 text-center py-1 text-xs border border-white/20 rounded text-white/60 hover:text-white hover:border-white/40 transition-colors"
+                          >
+                            Image
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Instructions */}
+                    <div className="border border-white/10 rounded p-2 bg-black/40">
+                      <p className="helvetica-micro text-white/40">
+                        💡 Paste prompt → Select settings → Generate
+                      </p>
+                    </div>
                   </div>
                 </>
               ) : (
