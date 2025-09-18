@@ -5,8 +5,30 @@
   --foreground: #ffffff;
   --grid-base: 8px;
   --border-width: 1px;
-  --transition-fast: 200ms;
-  --transition-normal: 500ms;
+  --transition-fast: 150ms;
+  --transition-normal: 300ms;
+  --transition-slow: 500ms;
+
+  /* HELVETICA Typography Scale */
+  --helvetica-display: 2.5rem;
+  --helvetica-h1: 1.75rem;
+  --helvetica-h2: 1.25rem;
+  --helvetica-h3: 1rem;
+  --helvetica-body: 0.875rem;
+  --helvetica-small: 0.75rem;
+  --helvetica-micro: 0.6875rem;
+
+  /* Letter Spacing Scale */
+  --tracking-display: 0.15em;
+  --tracking-headers: 0.1em;
+  --tracking-body: 0.05em;
+  --tracking-tight: 0.025em;
+
+  /* Line Height Scale */
+  --leading-display: 1.1;
+  --leading-headers: 1.2;
+  --leading-body: 1.4;
+  --leading-relaxed: 1.6;
 }
 
 @theme inline {
@@ -19,14 +41,115 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Eden Academy HELVETICA Typography */
+/* ===== HELVETICA TYPOGRAPHY SYSTEM ===== */
+
+/* Primary Font Family */
 .font-helvetica-neue {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+}
+
+/* Display Typography - For Main Titles */
+.helvetica-display {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-display);
+  font-weight: 700;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+/* Header Typography - H1 Level */
+.helvetica-h1 {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-h1);
+  font-weight: 700;
+  line-height: var(--leading-headers);
+  letter-spacing: var(--tracking-headers);
+  text-transform: uppercase;
+}
+
+/* Header Typography - H2 Level */
+.helvetica-h2 {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-h2);
+  font-weight: 700;
+  line-height: var(--leading-headers);
+  letter-spacing: var(--tracking-headers);
+  text-transform: uppercase;
+}
+
+/* Header Typography - H3 Level */
+.helvetica-h3 {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-h3);
+  font-weight: 700;
+  line-height: var(--leading-headers);
+  letter-spacing: var(--tracking-headers);
+  text-transform: uppercase;
+}
+
+/* Body Typography - Regular */
+.helvetica-body {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-body);
+  font-weight: 400;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+}
+
+/* Body Typography - Medium Weight */
+.helvetica-body-medium {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-body);
+  font-weight: 500;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+}
+
+/* Small Typography */
+.helvetica-small {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-small);
+  font-weight: 400;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Small Typography - Bold */
+.helvetica-small-bold {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-small);
+  font-weight: 700;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-headers);
+  text-transform: uppercase;
+}
+
+/* Micro Typography */
+.helvetica-micro {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-micro);
+  font-weight: 400;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Micro Typography - Bold */
+.helvetica-micro-bold {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-micro);
+  font-weight: 700;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-headers);
+  text-transform: uppercase;
 }
 
 /* Custom scrollbar for Eden aesthetic */
@@ -116,11 +239,23 @@ body {
   animation: fadeIn 0.5s ease-out forwards;
 }
 
-/* Eden button hover states */
+/* ===== EDEN COMPONENT SYSTEM ===== */
+
+/* Eden Button System */
 .eden-button {
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: calc(var(--grid-base) * 1.5) calc(var(--grid-base) * 3);
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-micro);
+  font-weight: 700;
+  letter-spacing: var(--tracking-headers);
+  text-transform: uppercase;
+  transition: all var(--transition-fast) ease;
+  cursor: pointer;
 }
 
 .eden-button::before {
@@ -132,13 +267,131 @@ body {
   height: 0;
   background: white;
   transform: translate(-50%, -50%);
-  transition: width 0.3s ease, height 0.3s ease;
+  transition: width var(--transition-fast) ease, height var(--transition-fast) ease;
   z-index: -1;
+}
+
+.eden-button:hover {
+  border-color: white;
+  color: black;
 }
 
 .eden-button:hover::before {
   width: 110%;
   height: 110%;
+}
+
+/* Eden Panel System */
+.eden-panel {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+.eden-panel-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: calc(var(--grid-base) * 3);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.eden-panel-content {
+  padding: calc(var(--grid-base) * 3);
+}
+
+/* Eden Input System */
+.eden-input {
+  width: 100%;
+  background: black;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: calc(var(--grid-base) * 2) calc(var(--grid-base) * 3);
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-small);
+  font-weight: 400;
+  letter-spacing: var(--tracking-body);
+  transition: border-color var(--transition-fast) ease;
+}
+
+.eden-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.eden-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.eden-select {
+  width: 100%;
+  background: black;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: calc(var(--grid-base) * 2) calc(var(--grid-base) * 3);
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-small);
+  font-weight: 400;
+  letter-spacing: var(--tracking-body);
+  text-transform: uppercase;
+  transition: border-color var(--transition-fast) ease;
+}
+
+.eden-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Eden Label System */
+.eden-label {
+  display: block;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: var(--helvetica-micro);
+  font-weight: 700;
+  letter-spacing: var(--tracking-headers);
+  text-transform: uppercase;
+  margin-bottom: calc(var(--grid-base) * 1);
+}
+
+/* Eden Grid System */
+.eden-grid-8 {
+  gap: calc(var(--grid-base) * 1);
+}
+
+.eden-grid-16 {
+  gap: calc(var(--grid-base) * 2);
+}
+
+.eden-grid-24 {
+  gap: calc(var(--grid-base) * 3);
+}
+
+.eden-grid-32 {
+  gap: calc(var(--grid-base) * 4);
+}
+
+/* Eden Spacing System */
+.eden-space-8 {
+  margin: calc(var(--grid-base) * 1);
+}
+
+.eden-space-16 {
+  margin: calc(var(--grid-base) * 2);
+}
+
+.eden-space-24 {
+  margin: calc(var(--grid-base) * 3);
+}
+
+.eden-space-32 {
+  margin: calc(var(--grid-base) * 4);
+}
+
+.eden-space-48 {
+  margin: calc(var(--grid-base) * 6);
+}
+
+.eden-space-64 {
+  margin: calc(var(--grid-base) * 8);
 }
 
 /* Agent icon animations */
@@ -151,9 +404,12 @@ body {
 }
 
 /* Panel entrance animations */
+/* ===== SOPHISTICATED ANIMATIONS ===== */
+
+/* Panel entrance animations with staggered timing */
 .panel-entrance {
   opacity: 0;
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeIn 0.8s ease-out forwards;
 }
 
 .panel-entrance:nth-child(1) { animation-delay: 0.1s; }
@@ -162,3 +418,65 @@ body {
 .panel-entrance:nth-child(4) { animation-delay: 0.4s; }
 .panel-entrance:nth-child(5) { animation-delay: 0.5s; }
 .panel-entrance:nth-child(6) { animation-delay: 0.6s; }
+.panel-entrance:nth-child(7) { animation-delay: 0.7s; }
+
+/* Enhanced hover effects for better feedback */
+.eden-button:hover {
+  transform: translateY(-1px);
+}
+
+.eden-panel:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  transition: border-color var(--transition-fast) ease;
+}
+
+/* Focus states for accessibility */
+.eden-input:focus,
+.eden-select:focus {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Typography emphasis states */
+.helvetica-emphasis {
+  position: relative;
+}
+
+.helvetica-emphasis::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: white;
+  transform: scaleX(0);
+  transition: transform var(--transition-fast) ease;
+}
+
+.helvetica-emphasis:hover::after {
+  transform: scaleX(1);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: color var(--transition-fast) ease,
+              background-color var(--transition-fast) ease,
+              border-color var(--transition-fast) ease,
+              opacity var(--transition-fast) ease;
+}
+
+/* Eden brand consistency helpers */
+.eden-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.eden-accent {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.eden-highlight {
+  color: white;
+  font-weight: 700;
+}

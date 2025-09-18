@@ -448,31 +448,31 @@ ${finalPrompt}`;
     <div className={`min-h-screen bg-gradient-to-br ${selectedAgent.bgGradient} transition-all duration-500`}>
       {/* Header */}
       <div className="border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-8 py-6">
+        <div className="max-w-7xl mx-auto px-8 py-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 border border-white/20 bg-black flex items-center justify-center">
-                <Film className="w-6 h-6 text-white" />
+            <div className="flex items-center eden-grid-32">
+              <div className="w-16 h-16 border border-white/20 bg-black flex items-center justify-center">
+                <Film className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="font-helvetica-neue font-bold text-white text-2xl tracking-wider uppercase">
+                <h1 className="helvetica-h1 text-white">
                   VIDEO PROMPT GENERATOR
                 </h1>
-                <p className="text-white/60 text-sm tracking-wide uppercase font-helvetica-neue">
-                  Eden Academy Creative Tools v2.0
+                <p className="helvetica-small text-white/60">
+                  EDEN ACADEMY CREATIVE TOOLS V2.0
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center eden-grid-24">
               <div className={`${selectedAgent.animationClass}`}>
-                <AgentIcon className="w-6 h-6 text-white" />
+                <AgentIcon className="w-8 h-8 text-white" />
               </div>
               <div className="text-right">
-                <div className="font-helvetica-neue font-bold text-white text-lg tracking-widest uppercase">
+                <div className="helvetica-h2 text-white">
                   {selectedAgent.name}
                 </div>
-                <div className="text-white/60 text-xs tracking-wide uppercase">
-                  {selectedAgent.description}
+                <div className="helvetica-micro text-white/60">
+                  {selectedAgent.description.toUpperCase()}
                 </div>
               </div>
             </div>
@@ -482,21 +482,21 @@ ${finalPrompt}`;
 
       {/* Agent Philosophy Banner with Score */}
       <div className="border-b border-white/10 bg-black/20">
-        <div className="max-w-7xl mx-auto px-8 py-4">
+        <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex items-center justify-between">
-            <p className="font-helvetica-neue font-bold text-white text-sm tracking-[0.2em] uppercase">
+            <p className="helvetica-body-medium text-white">
               {selectedAgent.philosophy}
             </p>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Award className="w-4 h-4 text-white/60" />
-                <span className="font-helvetica-neue text-white text-sm">
+            <div className="flex items-center eden-grid-32">
+              <div className="flex items-center eden-grid-16">
+                <Award className="w-5 h-5 text-white/60" />
+                <span className="helvetica-small-bold text-white">
                   QUALITY: {promptScore}/100
                 </span>
               </div>
-              <div className="flex items-center space-x-2">
-                <History className="w-4 h-4 text-white/60" />
-                <span className="font-helvetica-neue text-white text-sm">
+              <div className="flex items-center eden-grid-16">
+                <History className="w-5 h-5 text-white/60" />
+                <span className="helvetica-small-bold text-white">
                   {versionHistory.length} VERSIONS
                 </span>
               </div>
@@ -506,27 +506,27 @@ ${finalPrompt}`;
       </div>
 
       <div className="max-w-7xl mx-auto px-8 py-8">
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 eden-grid-64">
           {/* Configuration Panels */}
-          <div className="xl:col-span-2 space-y-6">
+          <div className="xl:col-span-2 space-y-8">
             {/* Template Library */}
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm panel-entrance">
-              <div className="border-b border-white/10 px-6 py-4">
-                <h3 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase flex items-center">
-                  <BookOpen className="w-4 h-4 mr-3" />
+            <div className="eden-panel panel-entrance">
+              <div className="eden-panel-header">
+                <h3 className="helvetica-h3 text-white flex items-center">
+                  <BookOpen className="w-5 h-5 mr-3" />
                   Quick Templates
                 </h3>
               </div>
-              <div className="p-6">
-                <div className="grid grid-cols-3 gap-2">
+              <div className="eden-panel-content">
+                <div className="grid grid-cols-3 eden-grid-16">
                   {PROMPT_TEMPLATES[config.agentType as keyof typeof PROMPT_TEMPLATES]?.map(template => (
                     <button
                       key={template.id}
                       onClick={() => applyTemplate(template)}
-                      className={`px-3 py-2 border text-xs font-helvetica-neue tracking-wide uppercase transition-all ${
+                      className={`eden-button ${
                         selectedTemplate?.id === template.id
                           ? 'bg-white text-black border-white'
-                          : 'bg-black border-white/20 text-white hover:bg-white hover:text-black'
+                          : ''
                       }`}
                     >
                       {template.name}
@@ -537,16 +537,16 @@ ${finalPrompt}`;
             </div>
 
             {/* Agent Selection */}
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm panel-entrance">
-              <div className="border-b border-white/10 px-6 py-4">
-                <h3 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase flex items-center">
-                  <Eye className="w-4 h-4 mr-3" />
+            <div className="eden-panel panel-entrance">
+              <div className="eden-panel-header">
+                <h3 className="helvetica-h3 text-white flex items-center">
+                  <Eye className="w-5 h-5 mr-3" />
                   Agent Selection
                 </h3>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="eden-panel-content space-y-6">
                 <select
-                  className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide uppercase focus:border-white/40 focus:outline-none transition-colors"
+                  className="eden-select"
                   value={config.agentType}
                   onChange={(e) => handleInputChange('agentType', e.target.value)}
                 >
@@ -555,11 +555,11 @@ ${finalPrompt}`;
                   <option value="geppetto">GEPPETTO - NARRATIVE ARCHITECT</option>
                   <option value="abraham">ABRAHAM - COLLECTIVE INTELLIGENCE</option>
                 </select>
-                <div className="border border-white/10 bg-black/60 p-4">
-                  <p className="text-white/80 text-xs font-helvetica-neue tracking-wide uppercase">
-                    {selectedAgent.description}
+                <div className="border border-white/10 bg-black/60 p-6">
+                  <p className="helvetica-small-bold text-white/80 mb-3">
+                    {selectedAgent.description.toUpperCase()}
                   </p>
-                  <p className="text-white/60 text-xs mt-2 font-helvetica-neue tracking-wide">
+                  <p className="helvetica-small text-white/60">
                     {selectedAgent.narrativeStyle}
                   </p>
                 </div>
@@ -567,16 +567,16 @@ ${finalPrompt}`;
             </div>
 
             {/* Content Source */}
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm panel-entrance">
-              <div className="border-b border-white/10 px-6 py-4">
-                <h3 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase flex items-center">
-                  <Settings className="w-4 h-4 mr-3" />
+            <div className="eden-panel panel-entrance">
+              <div className="eden-panel-header">
+                <h3 className="helvetica-h3 text-white flex items-center">
+                  <Settings className="w-5 h-5 mr-3" />
                   Content Source
                 </h3>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="eden-panel-content space-y-6">
                 <select
-                  className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide uppercase focus:border-white/40 focus:outline-none transition-colors"
+                  className="eden-select"
                   value={config.contentSource}
                   onChange={(e) => handleInputChange('contentSource', e.target.value)}
                 >
@@ -587,38 +587,38 @@ ${finalPrompt}`;
                 </select>
                 {config.contentSource === 'custom' && (
                   <textarea
-                    className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide placeholder-white/40 focus:border-white/40 focus:outline-none transition-colors resize-none"
+                    className="eden-input resize-none"
                     placeholder="ENTER YOUR CUSTOM INSPIRATION..."
                     value={config.customSource}
                     onChange={(e) => handleInputChange('customSource', e.target.value)}
-                    rows={3}
+                    rows={4}
                   />
                 )}
               </div>
             </div>
 
             {/* Story Parameters */}
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm panel-entrance">
-              <div className="border-b border-white/10 px-6 py-4">
-                <h3 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase flex items-center">
-                  <Mic className="w-4 h-4 mr-3" />
+            <div className="eden-panel panel-entrance">
+              <div className="eden-panel-header">
+                <h3 className="helvetica-h3 text-white flex items-center">
+                  <Mic className="w-5 h-5 mr-3" />
                   Story Parameters
                 </h3>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="eden-panel-content space-y-6">
                 <div>
-                  <label className="block text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">Story Length (words)</label>
+                  <label className="eden-label">Story Length (words)</label>
                   <input
                     type="number"
-                    className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide focus:border-white/40 focus:outline-none transition-colors"
+                    className="eden-input"
                     value={config.storyLength}
                     onChange={(e) => handleInputChange('storyLength', parseInt(e.target.value))}
                   />
                 </div>
                 <div>
-                  <label className="block text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">Narrative Style</label>
+                  <label className="eden-label">Narrative Style</label>
                   <select
-                    className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide uppercase focus:border-white/40 focus:outline-none transition-colors"
+                    className="eden-select"
                     value={config.narrativeStyle}
                     onChange={(e) => handleInputChange('narrativeStyle', e.target.value)}
                   >
@@ -628,9 +628,9 @@ ${finalPrompt}`;
                   </select>
                 </div>
                 <div>
-                  <label className="block text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">Genre</label>
+                  <label className="eden-label">Genre</label>
                   <select
-                    className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide uppercase focus:border-white/40 focus:outline-none transition-colors"
+                    className="eden-select"
                     value={config.genre}
                     onChange={(e) => handleInputChange('genre', e.target.value)}
                   >
@@ -645,18 +645,18 @@ ${finalPrompt}`;
             </div>
 
             {/* Visual Settings */}
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm panel-entrance">
-              <div className="border-b border-white/10 px-6 py-4">
-                <h3 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase flex items-center">
-                  <ImageIcon className="w-4 h-4 mr-3" />
+            <div className="eden-panel panel-entrance">
+              <div className="eden-panel-header">
+                <h3 className="helvetica-h3 text-white flex items-center">
+                  <ImageIcon className="w-5 h-5 mr-3" />
                   Visual Settings
                 </h3>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="eden-panel-content space-y-6">
                 <div>
-                  <label className="block text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">Aspect Ratio</label>
+                  <label className="eden-label">Aspect Ratio</label>
                   <select
-                    className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide uppercase focus:border-white/40 focus:outline-none transition-colors"
+                    className="eden-select"
                     value={config.aspectRatio}
                     onChange={(e) => handleInputChange('aspectRatio', e.target.value)}
                   >
@@ -667,12 +667,12 @@ ${finalPrompt}`;
                   </select>
                 </div>
                 <div>
-                  <label className="block text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">Style Description</label>
+                  <label className="eden-label">Style Description</label>
                   <textarea
-                    className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide placeholder-white/40 focus:border-white/40 focus:outline-none transition-colors resize-none"
+                    className="eden-input resize-none"
                     value={config.styleDescription}
                     onChange={(e) => handleInputChange('styleDescription', e.target.value)}
-                    rows={2}
+                    rows={3}
                   />
                 </div>
                 <div>
@@ -681,17 +681,17 @@ ${finalPrompt}`;
                       type="checkbox"
                       checked={config.includeCharacter}
                       onChange={(e) => handleInputChange('includeCharacter', e.target.checked)}
-                      className="mr-3 w-4 h-4 bg-black border border-white/20 text-white focus:ring-white/20"
+                      className="mr-4 w-5 h-5 bg-black border border-white/20 text-white focus:ring-white/20"
                     />
-                    <span className="text-white/80 text-xs font-helvetica-neue tracking-wide uppercase">Include Character</span>
+                    <span className="helvetica-small-bold text-white/80">Include Character</span>
                   </label>
                 </div>
                 {config.includeCharacter && (
                   <div>
-                    <label className="block text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">Character LoRA (optional)</label>
+                    <label className="eden-label">Character LoRA (optional)</label>
                     <input
                       type="text"
-                      className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide placeholder-white/40 focus:border-white/40 focus:outline-none transition-colors"
+                      className="eden-input"
                       placeholder="E.G., MY_CHARACTER_LORA"
                       value={config.characterLora}
                       onChange={(e) => handleInputChange('characterLora', e.target.value)}
@@ -702,27 +702,27 @@ ${finalPrompt}`;
             </div>
 
             {/* Video Settings */}
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm panel-entrance">
-              <div className="border-b border-white/10 px-6 py-4">
-                <h3 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase flex items-center">
-                  <Film className="w-4 h-4 mr-3" />
+            <div className="eden-panel panel-entrance">
+              <div className="eden-panel-header">
+                <h3 className="helvetica-h3 text-white flex items-center">
+                  <Film className="w-5 h-5 mr-3" />
                   Video Settings
                 </h3>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="eden-panel-content space-y-6">
                 <div>
-                  <label className="block text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">Clip Duration (seconds)</label>
+                  <label className="eden-label">Clip Duration (seconds)</label>
                   <input
                     type="number"
-                    className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide focus:border-white/40 focus:outline-none transition-colors"
+                    className="eden-input"
                     value={config.clipDuration}
                     onChange={(e) => handleInputChange('clipDuration', parseInt(e.target.value))}
                   />
                 </div>
                 <div>
-                  <label className="block text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">Video Model</label>
+                  <label className="eden-label">Video Model</label>
                   <select
-                    className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide uppercase focus:border-white/40 focus:outline-none transition-colors"
+                    className="eden-select"
                     value={config.videoModel}
                     onChange={(e) => handleInputChange('videoModel', e.target.value)}
                   >
@@ -737,39 +737,39 @@ ${finalPrompt}`;
                       type="checkbox"
                       checked={config.soundEffects}
                       onChange={(e) => handleInputChange('soundEffects', e.target.checked)}
-                      className="mr-3 w-4 h-4 bg-black border border-white/20 text-white focus:ring-white/20"
+                      className="mr-4 w-5 h-5 bg-black border border-white/20 text-white focus:ring-white/20"
                     />
-                    <span className="text-white/80 text-xs font-helvetica-neue tracking-wide uppercase">Include Sound Effects</span>
+                    <span className="helvetica-small-bold text-white/80">Include Sound Effects</span>
                   </label>
                 </div>
               </div>
             </div>
 
             {/* Music Settings */}
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm panel-entrance">
-              <div className="border-b border-white/10 px-6 py-4">
-                <h3 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase flex items-center">
-                  <Music className="w-4 h-4 mr-3" />
+            <div className="eden-panel panel-entrance">
+              <div className="eden-panel-header">
+                <h3 className="helvetica-h3 text-white flex items-center">
+                  <Music className="w-5 h-5 mr-3" />
                   Music Settings
                 </h3>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="eden-panel-content space-y-6">
                 <div>
-                  <label className="block text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">Music Style</label>
+                  <label className="eden-label">Music Style</label>
                   <input
                     type="text"
-                    className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide placeholder-white/40 focus:border-white/40 focus:outline-none transition-colors"
+                    className="eden-input"
                     value={config.musicStyle}
                     onChange={(e) => handleInputChange('musicStyle', e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className="block text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">Music Description</label>
+                  <label className="eden-label">Music Description</label>
                   <textarea
-                    className="w-full bg-black border border-white/20 text-white p-3 font-helvetica-neue text-sm tracking-wide placeholder-white/40 focus:border-white/40 focus:outline-none transition-colors resize-none"
+                    className="eden-input resize-none"
                     value={config.musicDescription}
                     onChange={(e) => handleInputChange('musicDescription', e.target.value)}
-                    rows={2}
+                    rows={3}
                   />
                 </div>
               </div>
@@ -777,21 +777,21 @@ ${finalPrompt}`;
           </div>
 
           {/* Generated Prompt */}
-          <div className="border border-white/20 bg-black/40 backdrop-blur-sm">
-            <div className="border-b border-white/10 px-6 py-4">
-              <h2 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase">Generated Prompt</h2>
+          <div className="eden-panel">
+            <div className="eden-panel-header">
+              <h2 className="helvetica-h3 text-white">Generated Prompt</h2>
             </div>
 
             {/* Enhancement Toggle */}
-            <div className="border-b border-white/10 px-6 py-3">
+            <div className="border-b border-white/10 px-6 py-4">
               <label className="flex items-center justify-between">
-                <span className="text-white/80 text-xs font-helvetica-neue tracking-wide uppercase">AI Enhancement</span>
+                <span className="helvetica-small-bold text-white/80">AI Enhancement</span>
                 <button
                   onClick={() => setShowEnhancement(!showEnhancement)}
-                  className={`px-3 py-1 text-xs font-helvetica-neue tracking-wide uppercase transition-all ${
+                  className={`eden-button ${
                     showEnhancement
-                      ? 'bg-white text-black'
-                      : 'bg-black border border-white/20 text-white hover:bg-white hover:text-black'
+                      ? 'bg-white text-black border-white'
+                      : ''
                   }`}
                 >
                   {showEnhancement ? 'ENHANCED' : 'ENHANCE'}
@@ -800,11 +800,11 @@ ${finalPrompt}`;
             </div>
 
             {/* Export Format Selection */}
-            <div className="border-b border-white/10 px-6 py-3">
-              <div className="flex items-center space-x-2">
-                <FileText className="w-4 h-4 text-white/60" />
+            <div className="border-b border-white/10 px-6 py-4">
+              <div className="flex items-center eden-grid-16">
+                <FileText className="w-5 h-5 text-white/60" />
                 <select
-                  className="bg-black border border-white/20 text-white px-2 py-1 text-xs font-helvetica-neue tracking-wide uppercase"
+                  className="eden-select flex-1"
                   value={exportFormat}
                   onChange={(e) => setExportFormat(e.target.value)}
                 >
@@ -817,48 +817,48 @@ ${finalPrompt}`;
             </div>
 
             {/* Action Buttons */}
-            <div className="border-b border-white/10 px-6 py-3 flex justify-between">
+            <div className="border-b border-white/10 px-6 py-4 flex justify-between">
               <button
                 onClick={saveVersion}
-                className="px-3 py-1 bg-black border border-white/20 text-white font-helvetica-neue text-xs tracking-wide uppercase hover:bg-white hover:text-black transition-all flex items-center"
+                className="eden-button flex items-center"
               >
-                <History className="w-3 h-3 mr-2" />
+                <History className="w-4 h-4 mr-2" />
                 Save Version
               </button>
-              <div className="flex space-x-2">
+              <div className="flex eden-grid-16">
                 <button
                   onClick={copyToClipboard}
-                  className="px-3 py-1 bg-black border border-white/20 text-white font-helvetica-neue text-xs tracking-wide uppercase hover:bg-white hover:text-black transition-all flex items-center"
+                  className="eden-button flex items-center"
                 >
-                  <Copy className="w-3 h-3 mr-2" />
+                  <Copy className="w-4 h-4 mr-2" />
                   Copy
                 </button>
                 <button
                   onClick={exportPrompt}
-                  className="px-3 py-1 bg-black border border-white/20 text-white font-helvetica-neue text-xs tracking-wide uppercase hover:bg-white hover:text-black transition-all flex items-center"
+                  className="eden-button flex items-center"
                 >
-                  <Download className="w-3 h-3 mr-2" />
+                  <Download className="w-4 h-4 mr-2" />
                   Export
                 </button>
               </div>
             </div>
 
             {/* Prompt Display */}
-            <div className="p-6">
-              <div className="bg-black border border-white/10 p-6 h-[600px] overflow-y-auto">
-                <pre className="whitespace-pre-wrap text-white/90 text-xs font-mono leading-relaxed">
+            <div className="eden-panel-content">
+              <div className="bg-black border border-white/10 p-8 h-[600px] overflow-y-auto">
+                <pre className="whitespace-pre-wrap text-white/90 helvetica-small leading-relaxed">
                   {showEnhancement ? enhancePrompt() : prompt}
                 </pre>
               </div>
             </div>
 
             {/* Timeline Preview Toggle */}
-            <div className="border-t border-white/10 px-6 py-3">
+            <div className="border-t border-white/10 px-6 py-4">
               <button
                 onClick={() => setShowTimeline(!showTimeline)}
-                className="w-full px-3 py-2 bg-black border border-white/20 text-white font-helvetica-neue text-xs tracking-wide uppercase hover:bg-white hover:text-black transition-all flex items-center justify-center"
+                className="w-full eden-button flex items-center justify-center"
               >
-                {showTimeline ? <Pause className="w-3 h-3 mr-2" /> : <Play className="w-3 h-3 mr-2" />}
+                {showTimeline ? <Pause className="w-4 h-4 mr-2" /> : <Play className="w-4 h-4 mr-2" />}
                 {showTimeline ? 'Hide' : 'Show'} Timeline Preview
               </button>
             </div>
@@ -867,104 +867,114 @@ ${finalPrompt}`;
 
         {/* Timeline Preview */}
         {showTimeline && (
-          <div className="mt-8 border border-white/20 bg-black/40 backdrop-blur-sm p-6 fade-in">
-            <h3 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase mb-4">
-              Video Timeline Preview
-            </h3>
-            <div className="flex space-x-2 overflow-x-auto pb-4">
+          <div className="mt-8 eden-panel panel-entrance">
+            <div className="eden-panel-header">
+              <h3 className="helvetica-h3 text-white">
+                Video Timeline Preview
+              </h3>
+            </div>
+            <div className="eden-panel-content">
+              <div className="flex eden-grid-16 overflow-x-auto pb-4">
               {[...Array(Math.ceil(config.storyLength / 25))].map((_, i) => (
                 <div
                   key={i}
-                  className="flex-shrink-0 border border-white/20 bg-black/60 p-4 min-w-[120px]"
+                  className="flex-shrink-0 border border-white/20 bg-black/60 p-6 min-w-[140px]"
                 >
-                  <div className="text-white/60 text-xs font-helvetica-neue tracking-wide uppercase mb-2">
+                  <div className="helvetica-micro-bold text-white/60 mb-3">
                     Clip {i + 1}
                   </div>
-                  <div className="text-white text-sm font-helvetica-neue">
+                  <div className="helvetica-body text-white">
                     {config.clipDuration}s
                   </div>
-                  <div className="mt-2 h-16 bg-white/5 border border-white/10 flex items-center justify-center">
-                    <ChevronRight className="w-4 h-4 text-white/30" />
+                  <div className="mt-4 h-16 bg-white/5 border border-white/10 flex items-center justify-center">
+                    <ChevronRight className="w-5 h-5 text-white/30" />
                   </div>
                 </div>
               ))}
+              </div>
             </div>
           </div>
         )}
 
         {/* Version History */}
         {versionHistory.length > 0 && (
-          <div className="mt-8 border border-white/20 bg-black/40 backdrop-blur-sm p-6">
-            <h3 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase mb-4">
-              Version History
-            </h3>
-            <div className="space-y-2">
+          <div className="mt-8 eden-panel panel-entrance">
+            <div className="eden-panel-header">
+              <h3 className="helvetica-h3 text-white">
+                Version History
+              </h3>
+            </div>
+            <div className="eden-panel-content">
+              <div className="space-y-4">
               {versionHistory.slice(0, 3).map(version => (
                 <div
                   key={version.id}
-                  className="border border-white/10 bg-black/60 p-3 flex items-center justify-between"
+                  className="border border-white/10 bg-black/60 p-4 flex items-center justify-between"
                 >
                   <div>
-                    <span className="text-white text-xs font-helvetica-neue tracking-wide">
+                    <span className="helvetica-small text-white">
                       {version.agent} - {new Date(version.timestamp).toLocaleString()}
                     </span>
-                    <span className="ml-2 text-white/60 text-xs">
+                    <span className="ml-4 helvetica-micro text-white/60">
                       Score: {version.score}/100
                     </span>
                   </div>
                   <button
                     onClick={() => setConfig(version.config)}
-                    className="px-2 py-1 text-xs font-helvetica-neue tracking-wide uppercase border border-white/20 text-white hover:bg-white hover:text-black transition-all"
+                    className="eden-button"
                   >
                     Restore
                   </button>
                 </div>
               ))}
+              </div>
             </div>
           </div>
         )}
 
         {/* Production Metrics */}
-        <div className="mt-8 border-t border-white/10 pt-8">
-          <div className="text-center mb-6">
-            <h3 className="font-helvetica-neue font-bold text-white text-sm tracking-wider uppercase">
+        <div className="mt-8 eden-panel panel-entrance">
+          <div className="eden-panel-header">
+            <h3 className="helvetica-h3 text-white">
               Production Metrics
             </h3>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm p-6 text-center">
-              <div className="text-3xl font-helvetica-neue font-bold text-white mb-2">
-                {Math.ceil(config.storyLength / 25)}
-              </div>
-              <div className="text-white/60 text-xs font-helvetica-neue tracking-wide uppercase">Estimated Clips</div>
-            </div>
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm p-6 text-center">
-              <div className="text-3xl font-helvetica-neue font-bold text-white mb-2">
-                {Math.ceil((config.storyLength / 25) * config.clipDuration)}s
-              </div>
-              <div className="text-white/60 text-xs font-helvetica-neue tracking-wide uppercase">Total Duration</div>
-            </div>
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm p-6 text-center">
-              <div className="text-3xl font-helvetica-neue font-bold text-white mb-2">
-                {config.referenceImages + Math.ceil(config.storyLength / 25)}
-              </div>
-              <div className="text-white/60 text-xs font-helvetica-neue tracking-wide uppercase">Total Images</div>
-            </div>
-            <div className="border border-white/20 bg-black/40 backdrop-blur-sm p-6 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <AgentIcon className="w-6 h-6 text-white mr-2" />
-                <div className="text-lg font-helvetica-neue font-bold text-white tracking-wider">
-                  {selectedAgent.name}
+          <div className="eden-panel-content">
+            <div className="grid grid-cols-2 lg:grid-cols-4 eden-grid-32">
+              <div className="border border-white/10 bg-black/40 p-8 text-center">
+                <div className="helvetica-display text-white mb-4">
+                  {Math.ceil(config.storyLength / 25)}
                 </div>
+                <div className="helvetica-micro-bold text-white/60">Estimated Clips</div>
               </div>
-              <div className="text-white/60 text-xs font-helvetica-neue tracking-wide uppercase">Active Agent</div>
+              <div className="border border-white/10 bg-black/40 p-8 text-center">
+                <div className="helvetica-display text-white mb-4">
+                  {Math.ceil((config.storyLength / 25) * config.clipDuration)}s
+                </div>
+                <div className="helvetica-micro-bold text-white/60">Total Duration</div>
+              </div>
+              <div className="border border-white/10 bg-black/40 p-8 text-center">
+                <div className="helvetica-display text-white mb-4">
+                  {config.referenceImages + Math.ceil(config.storyLength / 25)}
+                </div>
+                <div className="helvetica-micro-bold text-white/60">Total Images</div>
+              </div>
+              <div className="border border-white/10 bg-black/40 p-8 text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <AgentIcon className="w-8 h-8 text-white mr-3" />
+                  <div className="helvetica-h2 text-white">
+                    {selectedAgent.name}
+                  </div>
+                </div>
+                <div className="helvetica-micro-bold text-white/60">Active Agent</div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Keyboard Shortcuts Guide */}
         <div className="mt-8 text-center">
-          <p className="text-white/40 text-xs font-helvetica-neue tracking-wide">
+          <p className="helvetica-micro text-white/40">
             KEYBOARD SHORTCUTS: ⌘G (SAVE) · ⌘C (COPY) · ⌘E (ENHANCE) · ⌘1-4 (AGENTS) · SPACE (TIMELINE)
           </p>
         </div>
