@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     // Forward request to Eden API - trying different endpoints
     // First try the main API
-    let response = await fetch(`${EDEN_BASE_URL}/tasks/create`, {
+    const response = await fetch(`${EDEN_BASE_URL}/tasks/create`, {
       method: 'POST',
       headers: {
         'X-Api-Key': EDEN_API_KEY,  // Changed from Bearer to X-Api-Key
