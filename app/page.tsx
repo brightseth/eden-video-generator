@@ -3,8 +3,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Film, Copy, Download,
-  Sparkles, Brain, Zap, Eye, BookOpen, Award, Video
+  Sparkles, Brain, Zap, Eye, BookOpen, Award, Video, Loader2, CheckCircle, AlertCircle
 } from 'lucide-react';
+import { edenAPIClient } from '@/lib/eden-api-client';
 
 // Prompt Templates Library
 const PROMPT_TEMPLATES = {
@@ -64,6 +65,10 @@ export default function CompactVideoPromptGenerator() {
     overrides: Record<string, string | number>;
   } | null>(null);
   const [showEnhancement, setShowEnhancement] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationStatus, setGenerationStatus] = useState<string>('');
+  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string>('');
+  const [generationError, setGenerationError] = useState<string>('');
 
   const agentProfiles = {
     solienne: {
@@ -187,6 +192,48 @@ ${showEnhancement ? '\n## ENHANCED WITH AGENT INTELLIGENCE\n' + getEnhancement()
     a.href = url;
     a.download = `${config.agentType}-prompt-${Date.now()}.txt`;
     a.click();
+  };
+
+  const generateWithEden = async () => {
+    setIsGenerating(true);
+    setGenerationError('');
+    setGeneratedVideoUrl('');
+    setGenerationStatus('Preparing prompt...');
+
+    try {
+      const prompt = generatePrompt();
+      const enhancedPrompt = showEnhancement
+        ? prompt + '\n\n' + getEnhancement()
+        : prompt;
+
+      setGenerationStatus('Creating video task...');
+
+      // Map quality based on config
+      const quality = config.imageQuality === 'high' ? 'high' :
+                     config.imageQuality === 'low' ? 'low' : 'medium';
+
+      // Generate video
+      const videoUrl = await edenAPIClient.generateVideo(
+        enhancedPrompt,
+        {
+          aspectRatio: config.aspectRatio,
+          duration: config.clipDuration * config.numberOfClips,
+          quality
+        },
+        (status) => {
+          setGenerationStatus(`Processing: ${status}`);
+        }
+      );
+
+      setGeneratedVideoUrl(videoUrl);
+      setGenerationStatus('Video generated successfully!');
+    } catch (error) {
+      console.error('Generation error:', error);
+      setGenerationError(error instanceof Error ? error.message : 'Generation failed');
+      setGenerationStatus('');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const AgentIcon = selectedAgent.icon;
@@ -534,24 +581,97 @@ ${showEnhancement ? '\n## ENHANCED WITH AGENT INTELLIGENCE\n' + getEnhancement()
               </h3>
             </div>
             <div className="p-3 space-y-3">
-              <div className="text-center py-8">
-                <Sparkles className="w-8 h-8 text-white/40 mx-auto mb-3" />
-                <p className="helvetica-micro text-white/60">
-                  EDEN API INTEGRATION
-                </p>
-                <p className="helvetica-micro text-white/40 mt-2">
-                  Coming Soon
-                </p>
-              </div>
+              {/* Generate Button */}
+              <button
+                onClick={generateWithEden}
+                disabled={isGenerating}
+                className={`w-full eden-button py-3 flex items-center justify-center ${
+                  isGenerating ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    GENERATING...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    GENERATE WITH EDEN
+                  </>
+                )}
+              </button>
+
+              {/* Status Display */}
+              {generationStatus && (
+                <div className="border border-white/20 rounded p-3 bg-black/60">
+                  <p className="helvetica-micro text-white/80">
+                    {generationStatus}
+                  </p>
+                </div>
+              )}
+
+              {/* Error Display */}
+              {generationError && (
+                <div className="border border-red-500/20 rounded p-3 bg-red-900/10">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 text-red-400 mt-0.5" />
+                    <p className="helvetica-micro text-red-400">
+                      {generationError}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Video Result */}
+              {generatedVideoUrl && (
+                <div className="space-y-3">
+                  <div className="border border-green-500/20 rounded p-3 bg-green-900/10">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircle className="w-4 h-4 text-green-400" />
+                      <p className="helvetica-micro-bold text-green-400">
+                        VIDEO READY
+                      </p>
+                    </div>
+                  </div>
+
+                  <video
+                    src={generatedVideoUrl}
+                    controls
+                    className="w-full rounded border border-white/10"
+                    autoPlay
+                    loop
+                  />
+
+                  <a
+                    href={generatedVideoUrl}
+                    download={`${config.agentType}-video-${Date.now()}.mp4`}
+                    className="w-full eden-button py-2 flex items-center justify-center"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    DOWNLOAD VIDEO
+                  </a>
+                </div>
+              )}
+
+              {/* Info */}
               <div className="border-t border-white/10 pt-3">
-                <p className="helvetica-micro text-white/60">
-                  Future Features:
+                <p className="helvetica-micro text-white/60 mb-2">
+                  Generation Settings:
                 </p>
-                <ul className="mt-2 space-y-1">
-                  <li className="helvetica-micro text-white/40">• Direct video generation</li>
-                  <li className="helvetica-micro text-white/40">• Real-time progress tracking</li>
-                  <li className="helvetica-micro text-white/40">• Video preview & download</li>
-                  <li className="helvetica-micro text-white/40">• Generation history</li>
+                <ul className="space-y-1">
+                  <li className="helvetica-micro text-white/40">
+                    • Duration: {config.clipDuration * config.numberOfClips}s
+                  </li>
+                  <li className="helvetica-micro text-white/40">
+                    • Aspect: {config.aspectRatio}
+                  </li>
+                  <li className="helvetica-micro text-white/40">
+                    • Quality: {config.imageQuality}
+                  </li>
+                  <li className="helvetica-micro text-white/40">
+                    • Agent: {selectedAgent.name}
+                  </li>
                 </ul>
               </div>
             </div>
