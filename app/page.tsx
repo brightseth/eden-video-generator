@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Film, Copy, Download,
   Sparkles, Brain, Zap, Eye, BookOpen, Video, Loader2, CheckCircle, AlertCircle
@@ -131,7 +131,7 @@ export default function CompactVideoPromptGenerator() {
     },
     sue: {
       name: 'SUE',
-      icon: Award,
+      icon: Eye,
       description: 'Chief curator',
       edenId: edenAgentMap.sue
     },
