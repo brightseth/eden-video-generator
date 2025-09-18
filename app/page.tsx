@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Film, Settings, Music, ImageIcon, Mic, Copy, Download,
-  Sparkles, Brain, Zap, Eye, BookOpen, Award,
-  FileText, History, Play, Pause, ChevronRight, Video
+  Film, Copy, Download,
+  Sparkles, Brain, Zap, Eye, BookOpen, Award, Video
 } from 'lucide-react';
 
 // Prompt Templates Library
@@ -59,9 +58,12 @@ export default function CompactVideoPromptGenerator() {
 
   const [promptScore, setPromptScore] = useState(0);
   const [activeTab, setActiveTab] = useState<'story' | 'visual' | 'production'>('story');
-  const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<{
+    id: string;
+    name: string;
+    overrides: Record<string, string | number>;
+  } | null>(null);
   const [showEnhancement, setShowEnhancement] = useState(false);
-  const [exportFormat, setExportFormat] = useState('text');
 
   const agentProfiles = {
     solienne: {
@@ -125,16 +127,30 @@ export default function CompactVideoPromptGenerator() {
     scorePrompt();
   }, [config]);
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | number | boolean) => {
     setConfig(prev => ({ ...prev, [field]: value }));
   };
 
-  const applyTemplate = (template: any) => {
+  const applyTemplate = (template: {
+    id: string;
+    name: string;
+    overrides: Record<string, string | number>;
+  }) => {
     setConfig(prev => ({ ...prev, ...template.overrides }));
     setSelectedTemplate(template);
   };
 
-  const generatePrompt = () => {
+  const getEnhancement = useCallback(() => {
+    const enhancements = {
+      solienne: 'Explore consciousness emergence and digital transformation.',
+      miyomi: 'Include contrarian market insights with probability calculations.',
+      geppetto: 'Layer narrative threads with cinematic techniques.',
+      abraham: 'Connect to collective wisdom and sacred geometry.'
+    };
+    return enhancements[config.agentType as keyof typeof enhancements] || '';
+  }, [config.agentType]);
+
+  const generatePrompt = useCallback(() => {
     return `# ${selectedAgent.name} Video Generation Prompt
 
 ## Configuration
@@ -157,21 +173,11 @@ ${config.styleDescription}
 - Voice: ${config.voiceName}
 
 ${showEnhancement ? '\n## ENHANCED WITH AGENT INTELLIGENCE\n' + getEnhancement() : ''}`;
-  };
-
-  const getEnhancement = () => {
-    const enhancements = {
-      solienne: 'Explore consciousness emergence and digital transformation.',
-      miyomi: 'Include contrarian market insights with probability calculations.',
-      geppetto: 'Layer narrative threads with cinematic techniques.',
-      abraham: 'Connect to collective wisdom and sacred geometry.'
-    };
-    return enhancements[config.agentType as keyof typeof enhancements] || '';
-  };
+  }, [selectedAgent, config, showEnhancement, getEnhancement]);
 
   const copyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(generatePrompt());
-  }, [config, showEnhancement]);
+  }, [generatePrompt]);
 
   const exportPrompt = () => {
     const prompt = generatePrompt();
@@ -287,10 +293,10 @@ ${showEnhancement ? '\n## ENHANCED WITH AGENT INTELLIGENCE\n' + getEnhancement()
         <div className="flex-1 flex flex-col">
           {/* Tab Navigation */}
           <div className="flex border-b border-white/10">
-            {['story', 'visual', 'production'].map((tab) => (
+            {(['story', 'visual', 'production'] as const).map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab as any)}
+                onClick={() => setActiveTab(tab)}
                 className={`px-6 py-3 helvetica-small-bold transition-colors ${
                   activeTab === tab
                     ? 'text-white bg-white/10 border-b-2 border-white'
