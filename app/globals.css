@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
+  --grid-base: 8px;
+  --border-width: 1px;
+  --transition-fast: 200ms;
+  --transition-normal: 500ms;
 }
 
 @theme inline {
@@ -12,15 +16,149 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* Eden Academy HELVETICA Typography */
+.font-helvetica-neue {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Custom scrollbar for Eden aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Agent-specific animations */
+@keyframes consciousness-pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+@keyframes market-glitch {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-1px); }
+  40% { transform: translateX(1px); }
+}
+
+@keyframes narrative-flow {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+@keyframes collective-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-consciousness {
+  animation: consciousness-pulse 3s ease-in-out infinite;
+}
+
+.animate-market {
+  animation: market-glitch 2s steps(4) infinite;
+}
+
+.animate-narrative {
+  animation: narrative-flow 20s linear infinite;
+}
+
+.animate-collective {
+  animation: collective-rotate 30s linear infinite;
+}
+
+/* Typing cursor effect */
+@keyframes typing {
+  from { opacity: 0; }
+  50% { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.typing-cursor::after {
+  content: '|';
+  animation: typing 1s infinite;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 2px;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Eden button hover states */
+.eden-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.eden-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: white;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+  z-index: -1;
+}
+
+.eden-button:hover::before {
+  width: 110%;
+  height: 110%;
+}
+
+/* Agent icon animations */
+.agent-icon-animate {
+  transition: transform 0.3s ease;
+}
+
+.agent-icon-animate:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Panel entrance animations */
+.panel-entrance {
+  opacity: 0;
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.panel-entrance:nth-child(1) { animation-delay: 0.1s; }
+.panel-entrance:nth-child(2) { animation-delay: 0.2s; }
+.panel-entrance:nth-child(3) { animation-delay: 0.3s; }
+.panel-entrance:nth-child(4) { animation-delay: 0.4s; }
+.panel-entrance:nth-child(5) { animation-delay: 0.5s; }
+.panel-entrance:nth-child(6) { animation-delay: 0.6s; }
