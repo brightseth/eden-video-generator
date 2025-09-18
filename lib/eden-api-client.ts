@@ -27,7 +27,7 @@ class EdenAPIClient {
 
   constructor() {
     this.apiKey = process.env.EDEN_API_KEY || '';
-    this.baseUrl = process.env.NEXT_PUBLIC_EDEN_BASE_URL || 'https://api.eden.art';
+    this.baseUrl = 'https://api.eden.art';
   }
 
   /**

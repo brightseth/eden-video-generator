@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const EDEN_API_KEY = process.env.EDEN_API_KEY;
-const EDEN_BASE_URL = process.env.NEXT_PUBLIC_EDEN_BASE_URL || 'https://api.eden.art';
+const EDEN_BASE_URL = 'https://api.eden.art';
 
 interface RouteContext {
   params: Promise<{
@@ -24,9 +24,10 @@ export async function GET(
 
   try {
     // Check task status with Eden API
-    const response = await fetch(`${EDEN_BASE_URL}/v2/tasks/${taskId}`, {
+    const response = await fetch(`${EDEN_BASE_URL}/tasks/${taskId}`, {
       headers: {
-        'Authorization': `Bearer ${EDEN_API_KEY}`
+        'X-Api-Key': EDEN_API_KEY,
+        'Accept': 'application/json'
       }
     });
 
