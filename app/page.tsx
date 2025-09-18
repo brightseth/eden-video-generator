@@ -68,10 +68,21 @@ const VideoPromptGenerator = () => {
   });
 
   const [promptScore, setPromptScore] = useState(0);
-  const [versionHistory, setVersionHistory] = useState([]);
+  const [versionHistory, setVersionHistory] = useState<Array<{
+    id: number;
+    timestamp: string;
+    agent: string;
+    config: typeof config;
+    prompt: string;
+    score: number;
+  }>>([]);
   const [showTimeline, setShowTimeline] = useState(false);
   const [exportFormat, setExportFormat] = useState('text');
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<{
+    id: string;
+    name: string;
+    overrides: Record<string, number | string>;
+  } | null>(null);
   const [showEnhancement, setShowEnhancement] = useState(false);
 
   const agentProfiles = {
