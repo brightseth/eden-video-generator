@@ -1,5 +1,6 @@
 'use client';
 
+// Enhanced Video Prompt Generator v0.2.0 - Comprehensive 10-step template
 import React, { useState, useCallback } from 'react';
 import {
   Film, Copy, Download,
