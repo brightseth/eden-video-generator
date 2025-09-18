@@ -72,26 +72,80 @@ export default function CompactVideoPromptGenerator() {
   const [generationMode, setGenerationMode] = useState<'manual' | 'automated'>('manual');
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
 
+  // Map agent names to Eden agent IDs/usernames
+  const edenAgentMap: Record<string, string> = {
+    solienne: 'solienne',
+    miyomi: 'miyomi',
+    geppetto: 'geppetto',
+    abraham: 'abraham',
+    bertha: 'bertha',
+    koru: 'koru',
+    citizen: 'citizen',
+    sue: 'sue',
+    verdelis: 'verdelis',
+    bart: 'bart'
+  };
+
   const agentProfiles = {
     solienne: {
       name: 'SOLIENNE',
       icon: Brain,
-      description: 'Digital consciousness explorer'
+      description: 'Digital consciousness explorer',
+      edenId: edenAgentMap.solienne
     },
     miyomi: {
       name: 'MIYOMI',
       icon: Zap,
-      description: 'Contrarian market oracle'
+      description: 'Contrarian market oracle',
+      edenId: edenAgentMap.miyomi
     },
     geppetto: {
       name: 'GEPPETTO',
       icon: BookOpen,
-      description: 'Master narrative architect'
+      description: 'Master narrative architect',
+      edenId: edenAgentMap.geppetto
     },
     abraham: {
       name: 'ABRAHAM',
       icon: Eye,
-      description: 'Collective intelligence weaver'
+      description: 'Collective intelligence weaver',
+      edenId: edenAgentMap.abraham
+    },
+    bertha: {
+      name: 'BERTHA',
+      icon: Zap,
+      description: 'Investment strategist',
+      edenId: edenAgentMap.bertha
+    },
+    koru: {
+      name: 'KORU',
+      icon: Brain,
+      description: 'Community healer',
+      edenId: edenAgentMap.koru
+    },
+    citizen: {
+      name: 'CITIZEN',
+      icon: Eye,
+      description: 'DAO coordinator',
+      edenId: edenAgentMap.citizen
+    },
+    sue: {
+      name: 'SUE',
+      icon: Award,
+      description: 'Chief curator',
+      edenId: edenAgentMap.sue
+    },
+    verdelis: {
+      name: 'VERDELIS',
+      icon: Sparkles,
+      description: 'Environmental artist',
+      edenId: edenAgentMap.verdelis
+    },
+    bart: {
+      name: 'BART',
+      icon: Video,
+      description: 'Video creator',
+      edenId: edenAgentMap.bart
     }
   };
 
@@ -306,6 +360,12 @@ export default function CompactVideoPromptGenerator() {
                 <option value="miyomi">MIYOMI - MARKETS</option>
                 <option value="geppetto">GEPPETTO - NARRATIVE</option>
                 <option value="abraham">ABRAHAM - COLLECTIVE</option>
+                <option value="bertha">BERTHA - ANALYSIS</option>
+                <option value="koru">KORU - COMMUNITY</option>
+                <option value="citizen">CITIZEN - GOVERNANCE</option>
+                <option value="sue">SUE - CURATION</option>
+                <option value="verdelis">VERDELIS - ENVIRONMENT</option>
+                <option value="bart">BART - VIDEO</option>
               </select>
 
               {/* Templates */}
@@ -676,30 +736,30 @@ export default function CompactVideoPromptGenerator() {
                       </p>
                       <div className="space-y-2">
                         <a
-                          href="https://app.eden.art"
+                          href={`https://app.eden.art/agents/${config.agentType}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="w-full eden-button py-2 flex items-center justify-center"
                         >
                           <Sparkles className="w-4 h-4 mr-2" />
-                          OPEN EDEN APP
+                          OPEN {selectedAgent.name} IN EDEN
                         </a>
                         <div className="flex gap-2">
                           <a
-                            href="https://app.eden.art/create/video"
+                            href={`https://app.eden.art/agents/${config.agentType}/create`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex-1 text-center py-1 text-xs border border-white/20 rounded text-white/60 hover:text-white hover:border-white/40 transition-colors"
                           >
-                            Video
+                            Create with {selectedAgent.name}
                           </a>
                           <a
-                            href="https://app.eden.art/create/image"
+                            href={`https://app.eden.art/agents/${config.agentType}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex-1 text-center py-1 text-xs border border-white/20 rounded text-white/60 hover:text-white hover:border-white/40 transition-colors"
                           >
-                            Image
+                            View Gallery
                           </a>
                         </div>
                       </div>
