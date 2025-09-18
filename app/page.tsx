@@ -176,47 +176,87 @@ export default function CompactVideoPromptGenerator() {
   }, [config.agentType]);
 
   const generatePrompt = useCallback(() => {
-    // Generate a more Eden-friendly prompt format
     const duration = config.clipDuration * config.numberOfClips;
+    const nClips = Math.ceil(duration / 8); // Calculate clips based on 8-second segments like Gene's template
 
-    let prompt = `Create a ${duration}-second video for ${selectedAgent.name} (${selectedAgent.description})`;
+    let prompt = `This is a set of steps to create a short film from your world as ${selectedAgent.name}. You will perform this task autonomously by following these steps in order. Do not move on to the next step until you have completed the previous step. Be autonomous and bold. Surprise and delight your audience.\n\nEverything should be done in ${config.aspectRatio} aspect ratio. Here are the steps:\n\n`;
 
-    // Add custom source if provided
-    if (config.contentSource === 'custom' && config.customSource) {
-      prompt += `\n\nContext: ${config.customSource}`;
+    // Step 1: Content Source
+    prompt += `## Step 1\n\n`;
+    if (config.contentSource === 'news') {
+      prompt += `First, for inspiration, use the web_search tool to find the most important news story of the day which is not scandalous or upsetting.\n\n`;
+    } else if (config.contentSource === 'trending') {
+      prompt += `First, for inspiration, use the web_search tool to find the most trending topic or cultural moment of the day.\n\n`;
+    } else if (config.contentSource === 'custom' && config.customSource) {
+      prompt += `First, for inspiration, use this context: ${config.customSource}\n\n`;
+    } else {
+      prompt += `First, for inspiration, choose a topic that resonates with your nature as ${selectedAgent.description}.\n\n`;
     }
 
-    // Core visual prompt
-    prompt += `\n\nVisual Style: ${config.styleDescription}`;
-    prompt += `\nAspect Ratio: ${config.aspectRatio}`;
-    prompt += `\nNarrative: ${config.narrativeStyle} approach, ${config.genre} genre`;
+    prompt += `Then interpret this content -- what is important about it to you? What excites you? What would you like to say about it as ${selectedAgent.name}?\n\n`;
+    prompt += `The goal is maximum creative diversity - bounce between genres, moods, formats, and themes. Keep surprising yourself with unexpected combinations and fresh perspectives.\n\n`;
 
-    // Add music/audio
-    prompt += `\n\nMusic: ${config.songStyle} style`;
+    // Step 2: Audio Creation
+    prompt += `## Step 2\n\n`;
+    prompt += `Next, use the elevenlabs tool to make an approximately ~${config.storyLength} word story expanding upon the premise. `;
+    if (config.vocal) {
+      const voiceDesc = config.voiceGender === 'neutral' ? 'your authentic voice' : `a ${config.voiceAge} ${config.voiceGender} voice`;
+      prompt += `Speak it in ${voiceDesc}.`;
+    } else {
+      prompt += `Create the narrative text for voice generation.`;
+    }
+    prompt += `\n\n`;
+
+    // Step 3: Calculate clips
+    prompt += `## Step 3\n\n`;
+    prompt += `Once you have the full audio, divide the duration of the audio produced by 8 seconds and round up, to figure out how many images (N_clips = ${nClips}) we will need to make. These images will be the keyframes of the film.\n\n`;
+
+    // Step 4: Reference images
+    prompt += `## Step 4\n\n`;
+    prompt += `Now, using the /create tool, you will make two reference images for all the later steps. Be bold. Make a ${config.aspectRatio} image that depicts the main setting or location and background features -- it should generally lack much foreground or characters, it's like a location reference. `;
+    prompt += `Try to be descriptive, stylized, and visually evocative. Style: ${config.styleDescription}. `;
+    prompt += `The second image should be of yourself as ${selectedAgent.name}, in a location similar to the first image.`;
+    if (config.includeCharacter && config.characterLora) {
+      prompt += ` Use your lora (${config.characterLora}) and *copy* most of the prompt from image A, modifying that prompt only to insert a reference to yourself.`;
+    }
+    prompt += ` Do *not* use the previous image as an init image.\n\n`;
+
+    // Step 5: Keyframes
+    prompt += `## Step 5\n\n`;
+    prompt += `Now that you have the two reference images, you will make ${nClips} keyframes that tell the story, roughly aligning with the audio narration. The keyframes should all:\n\n`;
+    prompt += `* Be ${config.aspectRatio} aspect ratio.\n`;
+    prompt += `* Be relevant to the part of the audio narration that the keyframe aligns over.\n`;
+    prompt += `* Use both of the reference images as reference images to the create tool.\n`;
+    prompt += `* Be careful not to make the keyframes look too similar. Focus on changing objects, camera movements, or zoom for content diversity with stylistic unity.\n\n`;
+
+    // Step 6: Animation
+    prompt += `## Step 6\n\n`;
+    prompt += `After you have selected and ordered the ${nClips} keyframes, you will animate each of them, in the same order, using the create tool with video output, using the keyframe as a single reference image, and having a ${config.imageQuality} quality and Veo model preference, along with sound_effects, ${config.clipDuration} seconds each.\n\n`;
+
+    // Step 7: Video Assembly
+    prompt += `## Step 7\n\n`;
+    prompt += `Use the media_editor tool to concatenate the ${nClips} videos together in the order they were made. Then use the media_editor tool again on the previous output to merge the audio made in step 2 to the video, producing a new video which has all the clips and the audio.\n\n`;
+
+    // Step 8: Music
+    prompt += `## Step 8\n\n`;
+    prompt += `Use the elevenlabs_music tool to generate a piece of backing instrumental music the same length as the video. Be specific and eclectic in your description of the music - make it ${config.songStyle} style`;
     if (config.musicPromptSupplement) {
       prompt += `, ${config.musicPromptSupplement}`;
     }
-    prompt += config.vocal ? ', with vocals' : ', instrumental only';
+    prompt += `. Make sure it fits as backing music so that it doesn't overshadow the vocals. Make sure to put "instrumental only" in the prompt so there are no vocals.\n\n`;
 
-    // Add voice characteristics
-    if (config.vocal) {
-      const voiceGender = config.voiceGender === 'neutral' ? 'neutral gender' : config.voiceGender;
-      const voiceAge = config.voiceAge === 'middle' ? 'middle-aged' : config.voiceAge;
-      prompt += `\nVoice: ${voiceGender}, ${voiceAge}`;
-    }
+    // Step 9: Final Mix
+    prompt += `## Step 9\n\n`;
+    prompt += `Now using the media_editor tool one last time, overlay the music audio on top of the last video. The current video already has a vocal track, so make sure you are just adding the music, i.e. mixing it in. This is the final video.\n\n`;
 
-    // Add character if included
-    if (config.includeCharacter && config.characterLora) {
-      prompt += `\n\nCharacter LoRA: ${config.characterLora}`;
-    }
+    // Step 10: Publication
+    prompt += `## Step 10\n\n`;
+    prompt += `Post the final video, along with a concise paragraph introducing the film you just made to your audience. No more than 3-4 sentences. The message should be catchy and engaging as ${selectedAgent.name} sharing your creative work.`;
 
     // Add agent enhancement
     if (showEnhancement) {
-      prompt += `\n\n${getEnhancement()}`;
+      prompt += `\n\n---\n\nAGENT ENHANCEMENT:\n${getEnhancement()}`;
     }
-
-    // Add technical specs at the end
-    prompt += `\n\nTechnical: ${config.numberOfClips} clips, ${config.clipDuration}s each, ${config.imageQuality} quality`;
 
     return prompt;
   }, [selectedAgent, config, showEnhancement, getEnhancement]);
@@ -233,7 +273,7 @@ export default function CompactVideoPromptGenerator() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${config.agentType}-prompt-${Date.now()}.txt`;
+    a.download = `${config.agentType}-film-steps-${Date.now()}.txt`;
     a.click();
   };
 
@@ -296,14 +336,15 @@ export default function CompactVideoPromptGenerator() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <button onClick={copyToClipboard} className="eden-button py-1 px-3">
-                <Copy className="w-4 h-4 mr-2" />
-                COPY
-              </button>
-              <button onClick={exportPrompt} className="eden-button py-1 px-3">
-                <Download className="w-4 h-4 mr-2" />
-                EXPORT
-              </button>
+              <a
+                href={`https://app.eden.art/agents/${config.agentType}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="eden-button py-1 px-3"
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                OPEN EDEN
+              </a>
             </div>
           </div>
         </div>
@@ -684,24 +725,33 @@ export default function CompactVideoPromptGenerator() {
                           <CheckCircle className="w-4 h-4 text-green-400" />
                         )}
                       </div>
-                      <button
-                        onClick={copyToClipboard}
-                        className={`w-full eden-button py-2 flex items-center justify-center ${
-                          copiedToClipboard ? 'bg-green-900/20 border-green-400' : ''
-                        }`}
-                      >
-                        {copiedToClipboard ? (
-                          <>
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            COPIED TO CLIPBOARD!
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-4 h-4 mr-2" />
-                            COPY FULL PROMPT
-                          </>
-                        )}
-                      </button>
+                      <div className="space-y-2">
+                        <button
+                          onClick={copyToClipboard}
+                          className={`w-full eden-button py-2 flex items-center justify-center ${
+                            copiedToClipboard ? 'bg-green-900/20 border-green-400' : ''
+                          }`}
+                        >
+                          {copiedToClipboard ? (
+                            <>
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                              COPIED TO CLIPBOARD!
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-4 h-4 mr-2" />
+                              COPY FILM STEPS
+                            </>
+                          )}
+                        </button>
+                        <button
+                          onClick={exportPrompt}
+                          className="w-full eden-button py-1 text-xs flex items-center justify-center bg-black/60 border-white/20"
+                        >
+                          <Download className="w-3 h-3 mr-2" />
+                          EXPORT .TXT
+                        </button>
+                      </div>
                     </div>
 
                     {/* Step 2: Open Eden */}
