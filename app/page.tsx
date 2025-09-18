@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Film, Settings, Music, ImageIcon, Mic, Send, Copy, Download,
-  Sparkles, Brain, Zap, Eye, BookOpen, Clock, Award, FileJson,
-  FileText, Hash, History, Play, Pause, ChevronRight
+  Film, Settings, Music, ImageIcon, Mic, Copy, Download,
+  Sparkles, Brain, Zap, Eye, BookOpen, Award,
+  FileText, History, Play, Pause, ChevronRight
 } from 'lucide-react';
 
 // Prompt Templates Library
@@ -392,7 +392,11 @@ ${finalPrompt}`;
   };
 
   // Apply template
-  const applyTemplate = (template: any) => {
+  const applyTemplate = (template: {
+    id: string;
+    name: string;
+    overrides: Record<string, number | string>
+  }) => {
     setConfig(prev => ({ ...prev, ...template.overrides }));
     setSelectedTemplate(template);
   };
@@ -440,7 +444,7 @@ ${finalPrompt}`;
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [showEnhancement, showTimeline]);
+  }, [showEnhancement, showTimeline, copyToClipboard, saveVersion]);
 
   const AgentIcon = selectedAgent.icon;
 
