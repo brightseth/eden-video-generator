@@ -42,7 +42,6 @@ class EdenAPIClient {
     };
 
     const settings = qualitySettings[params.quality || 'medium'];
-    const nFrames = (params.duration || 8) * (params.fps || 24);
 
     try {
       const response = await fetch('/api/eden/generate', {
@@ -51,17 +50,15 @@ class EdenAPIClient {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          tool: 'veo',
+          prompt: params.prompt,
+          model_preference: 'veo',
           args: {
-            text_input: params.prompt,
             width: params.width || 1920,
             height: params.height || 1080,
-            n_frames: nFrames,
-            guidance_scale: settings.guidance_scale,
-            steps: settings.steps,
+            duration: params.duration || 8,
             fps: params.fps || 24,
-            motion_bucket_id: 127,
-            noise_aug_strength: 0.05
+            guidance_scale: settings.guidance_scale,
+            steps: settings.steps
           }
         })
       });

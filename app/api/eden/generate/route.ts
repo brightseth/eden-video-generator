@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const EDEN_API_KEY = process.env.EDEN_API_KEY;
-const EDEN_BASE_URL = 'https://api.eden.art'; // Main Eden API
+const EDEN_BASE_URL = 'https://api.eden.art/v2'; // v2 API from jmill
 
 export async function POST(request: NextRequest) {
   if (!EDEN_API_KEY) {
@@ -18,16 +18,26 @@ export async function POST(request: NextRequest) {
     console.log('Creating Eden task with body:', JSON.stringify(body, null, 2));
     console.log('Using Eden API URL:', `${EDEN_BASE_URL}/tasks/create`);
 
-    // Forward request to Eden API - trying different endpoints
-    // First try the main API
+    // Use jmill's v2 API format for video generation
+    const edenPayload = {
+      tool: "create",
+      args: {
+        prompt: body.prompt,
+        output: "video",
+        model_preference: body.model_preference || "veo",
+        ...body.args
+      }
+    };
+
+    console.log('Eden v2 payload:', JSON.stringify(edenPayload, null, 2));
+
     const response = await fetch(`${EDEN_BASE_URL}/tasks/create`, {
       method: 'POST',
       headers: {
-        'X-Api-Key': EDEN_API_KEY,  // Changed from Bearer to X-Api-Key
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'X-Api-Key': EDEN_API_KEY,
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(edenPayload)
     });
 
     const responseText = await response.text();

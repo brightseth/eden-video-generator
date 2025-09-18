@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const EDEN_API_KEY = process.env.EDEN_API_KEY;
-const EDEN_BASE_URL = 'https://api.eden.art';
+const EDEN_BASE_URL = 'https://api.eden.art/v2';
 
 interface RouteContext {
   params: Promise<{
