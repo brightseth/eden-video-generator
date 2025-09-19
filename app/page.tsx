@@ -6,6 +6,7 @@ import {
   Film, Copy, Download,
   Sparkles, Brain, Zap, Eye, BookOpen, Video, Loader2, CheckCircle, AlertCircle
 } from 'lucide-react';
+import Link from 'next/link';
 import { edenAPIClient } from '@/lib/eden-api-client';
 
 // Prompt Templates Library
@@ -337,6 +338,12 @@ export default function CompactVideoPromptGenerator() {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              <Link
+                href="/creative"
+                className="helvetica-micro text-white/60 hover:text-white transition-colors"
+              >
+                ✨ SIMPLE MODE
+              </Link>
               <a
                 href={`https://app.eden.art/agents/${config.agentType}`}
                 target="_blank"
