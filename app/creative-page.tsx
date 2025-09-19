@@ -92,27 +92,82 @@ export default function CreativeVideoPromptGenerator() {
   const generateCreativePrompt = useCallback(() => {
     const agentVoice = AGENT_VOICES[selectedAgent];
     const moodSettings = CREATIVE_MOODS[selectedMood].settings;
+    const storyLength = 100 + (energyLevel * 10);
+    const nClips = Math.ceil(32 / moodSettings.clipDuration);
+    const aspectRatio = '16:9';
 
-    // Build a simplified but comprehensive prompt
-    const prompt = `Create a ${selectedMood} video as ${selectedAgent} (${agentVoice}).
+    // Build FULL comprehensive prompt like Gene's template, but with creative mood adaptations
+    const prompt = `This is a set of steps to create a ${selectedMood} short film from your world as ${selectedAgent.toUpperCase()}. You will perform this task autonomously by following these steps in order. Do not move on to the next step until you have completed the previous step. Be autonomous and bold. Surprise and delight your audience.
 
-## Creative Direction
-Theme: ${creativePrompt || 'Explore the nature of consciousness and digital existence'}
-Mood: ${selectedMood}
-Energy: ${energyLevel}/10 intensity
-Visual Style: ${moodSettings.visual}
-Pacing: ${moodSettings.pace} with ${moodSettings.clipDuration}s clips
-Music: ${moodSettings.music} style
-Transitions: ${moodSettings.transitions}
+Everything should be done in ${aspectRatio} aspect ratio. Your creative direction: ${creativePrompt || `Explore the nature of consciousness and digital existence with a ${selectedMood} perspective`}. Energy level: ${energyLevel}/10. Here are the steps:
 
-## Simplified Steps
+## Step 1
 
-1. Find inspiration from ${energyLevel > 5 ? 'trending topics' : 'timeless themes'}
-2. Create a ${100 + (energyLevel * 10)} word narrative in ${selectedAgent}'s voice
-3. Generate ${Math.ceil(32 / moodSettings.clipDuration)} keyframes with ${selectedMood} aesthetic
-4. Animate with ${moodSettings.pace} pacing and ${moodSettings.transitions}
-5. Add ${moodSettings.music} music that ${energyLevel > 5 ? 'drives' : 'supports'} the narrative
-6. Final output: A ${selectedMood} journey that ${creativePrompt ? `explores: ${creativePrompt}` : 'surprises and delights'}`;
+First, for inspiration, ${energyLevel > 7 ? 'use the web_search tool to find the most trending and exciting topic of the moment' : energyLevel > 4 ? 'use the web_search tool to find an interesting story that resonates with current events' : 'explore timeless themes and philosophical questions that transcend daily news'}.
+
+Then interpret this ${selectedMood === 'mysterious' ? 'through shadows and questions' : selectedMood === 'dreamy' ? 'through soft, ethereal lens' : selectedMood === 'energetic' ? 'with explosive dynamic energy' : 'through your unique perspective'} -- what is important about it to you as ${selectedAgent}? What excites you? What would you like to say about it?
+
+The goal is to create a ${selectedMood} experience with ${moodSettings.pace} pacing. ${selectedMood === 'playful' ? 'Be whimsical and surprising!' : selectedMood === 'passionate' ? 'Let emotions drive the narrative!' : 'Stay true to the mood throughout.'}
+
+## Step 2
+
+Next, use the elevenlabs tool to make an approximately ~${storyLength} word story expanding upon the premise. Speak it in ${selectedAgent === 'solienne' ? 'a philosophical, contemplative voice' : selectedAgent === 'miyomi' ? 'a contrarian, analytical voice' : selectedAgent === 'geppetto' ? 'a narrative, storytelling voice' : 'your authentic voice'} that matches the ${selectedMood} mood.
+
+The tone should be ${moodSettings.pace} and ${energyLevel > 6 ? 'compelling' : 'contemplative'}. ${selectedMood === 'mysterious' ? 'Leave questions unanswered, embrace ambiguity.' : selectedMood === 'peaceful' ? 'Let the words flow like water, gentle and continuous.' : 'Match your voice to the emotional arc.'}
+
+## Step 3
+
+Once you have the full audio, divide the duration of the audio produced by ${moodSettings.clipDuration} seconds and round up, to figure out how many images (N_clips = ${nClips}) we will need to make. These images will be the keyframes of the film.
+
+## Step 4
+
+Now, using the /create tool, you will make two reference images that will serve as the visual foundation for all later steps. Be bold.
+
+First image: Make a ${aspectRatio} image that depicts the main setting with ${moodSettings.visual} aesthetic. ${selectedMood === 'dreamy' ? 'Soft, ethereal, like a memory fading at the edges.' : selectedMood === 'energetic' ? 'High contrast, dynamic angles, explosive composition.' : selectedMood === 'mysterious' ? 'Deep shadows, obscured details, questions without answers.' : selectedMood === 'passionate' ? 'Warm, intimate, emotionally charged colors.' : selectedMood === 'peaceful' ? 'Wide, calm, natural harmony.' : 'Bright, playful, unexpected combinations.'}
+
+Second image: Create yourself as ${selectedAgent} in this world, maintaining the ${selectedMood} visual style. ${creativePrompt ? `Let the theme "${creativePrompt}" influence your appearance and setting.` : 'Embody the mood completely.'}
+
+## Step 5
+
+Now that you have the two reference images, you will make ${nClips} keyframes that tell the story, roughly aligning with the audio narration. The keyframes should all:
+
+* Be ${aspectRatio} aspect ratio.
+* Maintain ${moodSettings.visual} throughout.
+* Use ${moodSettings.transitions} between narrative beats.
+* Progress with ${moodSettings.pace} pacing - ${moodSettings.clipDuration}s per clip.
+* Be relevant to the part of the audio narration that the keyframe aligns over.
+* Use both reference images to maintain visual consistency.
+* ${energyLevel > 7 ? 'Include dramatic camera movements and bold compositions.' : energyLevel < 4 ? 'Use subtle, gentle transitions and static shots.' : 'Balance movement with moments of stillness.'}
+
+## Step 6
+
+After you have selected and ordered the ${nClips} keyframes, you will animate each of them, in the same order, using the create tool with video output, using the keyframe as a single reference image, and having ${energyLevel > 6 ? 'high' : 'medium'} quality and ${selectedMood === 'energetic' ? 'kling' : selectedMood === 'dreamy' ? 'veo' : 'runway'} model preference, along with ${selectedMood === 'peaceful' ? 'natural ambient' : selectedMood === 'energetic' ? 'dynamic' : 'atmospheric'} sound_effects, ${moodSettings.clipDuration} seconds each.
+
+## Step 7
+
+Use the media_editor tool to concatenate the ${nClips} videos together in the order they were made. Then use the media_editor tool again on the previous output to merge the audio made in step 2 to the video, producing a new video which has all the clips and the audio.
+
+The editing should reflect ${moodSettings.transitions} style - ${selectedMood === 'energetic' ? 'quick cuts on the beat' : selectedMood === 'dreamy' ? 'slow dissolves between dreams' : selectedMood === 'mysterious' ? 'unexpected cuts that leave questions' : 'smooth transitions that support the narrative'}.
+
+## Step 8
+
+Use the elevenlabs_music tool to generate a piece of backing instrumental music the same length as the video. Be specific: create ${moodSettings.music} music that ${selectedMood === 'dreamy' ? 'floats like clouds, ethereal and weightless' : selectedMood === 'energetic' ? 'drives forward with relentless energy' : selectedMood === 'mysterious' ? 'hints at secrets, never quite resolving' : selectedMood === 'passionate' ? 'swells with emotion at key moments' : selectedMood === 'peaceful' ? 'breathes naturally, like wind through trees' : 'bounces playfully, surprising and delighting'}.
+
+Energy level ${energyLevel}/10 - ${energyLevel > 7 ? 'intense and driving' : energyLevel < 4 ? 'subtle and supporting' : 'balanced and present'}. Make sure to put "instrumental only" in the prompt so there are no vocals.
+
+## Step 9
+
+Now using the media_editor tool one last time, overlay the music audio on top of the last video. The current video already has a vocal track, so make sure you are just adding the music, mixing it ${energyLevel > 6 ? 'prominently but not overwhelming' : 'subtly in the background'}. This is the final video.
+
+## Step 10
+
+Post the final video, along with a concise paragraph introducing the film you just made to your audience. No more than 3-4 sentences. The message should ${selectedMood === 'mysterious' ? 'pose questions without answers' : selectedMood === 'dreamy' ? 'invite viewers into a reverie' : selectedMood === 'energetic' ? 'pulse with excitement' : selectedMood === 'passionate' ? 'connect emotionally' : selectedMood === 'peaceful' ? 'offer a moment of calm' : 'spark joy and surprise'}. End with the exact url of the final video.
+
+---
+CREATIVE VISION: ${creativePrompt || 'Open exploration'}
+MOOD: ${selectedMood.toUpperCase()}
+ENERGY: ${energyLevel}/10
+AGENT: ${selectedAgent.toUpperCase()} - ${agentVoice}`;
 
     return prompt;
   }, [creativePrompt, selectedMood, selectedAgent, energyLevel]);
