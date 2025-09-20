@@ -339,10 +339,16 @@ export default function CompactVideoPromptGenerator() {
             </div>
             <div className="flex items-center gap-4">
               <Link
+                href="/director"
+                className="helvetica-micro text-white/60 hover:text-white transition-colors"
+              >
+                🎬 DIRECTOR
+              </Link>
+              <Link
                 href="/creative"
                 className="helvetica-micro text-white/60 hover:text-white transition-colors"
               >
-                ✨ SIMPLE MODE
+                ✨ SIMPLE
               </Link>
               <a
                 href={`https://app.eden.art/agents/${config.agentType}`}

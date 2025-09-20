@@ -488,18 +488,6 @@ What journey should viewers experience?"
           </div>
         )}
 
-        {/* Live Preview - Simplified */}
-        <div className="border border-white/10 rounded p-4 bg-black/40">
-          <div className="flex items-center justify-between mb-2">
-            <span className="helvetica-micro-bold text-white/60">PREVIEW</span>
-            <span className="helvetica-micro text-white/40">
-              {generateCreativePrompt().length} chars
-            </span>
-          </div>
-          <div className="helvetica-micro text-white/40 whitespace-pre-wrap">
-            {generateCreativePrompt().split('\n').slice(0, 5).join('\n')}...
-          </div>
-        </div>
 
       </div>
     </div>
