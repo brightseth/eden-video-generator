@@ -3,9 +3,10 @@
 import React, { useState, useCallback } from 'react';
 import {
   Sparkles, Zap, Cloud, Flame, Waves, Heart,
-  Copy, CheckCircle
+  Copy, CheckCircle, Loader2, AlertCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import { edenAPIClient } from '@/lib/eden-api-client';
 
 // Creative presets that auto-configure all technical settings
 const CREATIVE_MOODS = {
@@ -86,6 +87,11 @@ export default function CreativeVideoPromptGenerator() {
   const [selectedAgent, setSelectedAgent] = useState<keyof typeof AGENT_VOICES>('solienne');
   const [energyLevel, setEnergyLevel] = useState(5);
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
+  const [generationMode, setGenerationMode] = useState<'manual' | 'automated'>('manual');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationStatus, setGenerationStatus] = useState('');
+  const [generatedVideoUrl, setGeneratedVideoUrl] = useState('');
+  const [generationError, setGenerationError] = useState('');
 
   const mood = CREATIVE_MOODS[selectedMood];
 
@@ -177,6 +183,48 @@ AGENT: ${selectedAgent.toUpperCase()} - ${agentVoice}`;
     setCopiedToClipboard(true);
     setTimeout(() => setCopiedToClipboard(false), 2000);
   }, [generateCreativePrompt]);
+
+  const generateWithEden = async () => {
+    setIsGenerating(true);
+    setGenerationError('');
+    setGeneratedVideoUrl('');
+    setGenerationStatus('Preparing creative vision...');
+
+    try {
+      // Create a concise prompt for Eden API that captures the creative vision
+      const moodSettings = CREATIVE_MOODS[selectedMood].settings;
+      const agentVoice = AGENT_VOICES[selectedAgent];
+
+      const apiPrompt = `As ${selectedAgent} (${agentVoice}), create a ${selectedMood} video. ${creativePrompt || 'Explore consciousness and digital existence'}. Style: ${moodSettings.visual}. Pace: ${moodSettings.pace}. Music: ${moodSettings.music}. Energy: ${energyLevel}/10.`;
+
+      setGenerationStatus('Creating video with Eden...');
+
+      // Map quality based on energy level
+      const quality = energyLevel > 7 ? 'high' : energyLevel < 4 ? 'low' : 'medium';
+
+      // Generate video using Eden API
+      const videoUrl = await edenAPIClient.generateVideo(
+        apiPrompt,
+        {
+          aspectRatio: '16:9',
+          duration: Math.ceil(32 / moodSettings.clipDuration) * moodSettings.clipDuration,
+          quality
+        },
+        (status) => {
+          setGenerationStatus(`Processing: ${status}`);
+        }
+      );
+
+      setGeneratedVideoUrl(videoUrl);
+      setGenerationStatus('Video generated successfully!');
+    } catch (error) {
+      console.error('Generation error:', error);
+      setGenerationError(error instanceof Error ? error.message : 'Generation failed');
+      setGenerationStatus('');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -300,37 +348,145 @@ What journey should viewers experience?"
           </div>
         </div>
 
+        {/* Generation Mode Toggle */}
+        <div className="eden-panel">
+          <div className="eden-panel-header p-3">
+            <h2 className="helvetica-small-bold">GENERATION MODE</h2>
+          </div>
+          <div className="p-6">
+            <div className="flex gap-2 p-1 bg-black/60 rounded border border-white/10">
+              <button
+                onClick={() => setGenerationMode('manual')}
+                className={`flex-1 py-2 px-3 rounded text-xs helvetica-small-bold transition-colors ${
+                  generationMode === 'manual'
+                    ? 'bg-white text-black'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                MANUAL
+              </button>
+              <button
+                onClick={() => setGenerationMode('automated')}
+                className={`flex-1 py-2 px-3 rounded text-xs helvetica-small-bold transition-colors flex items-center justify-center gap-1 ${
+                  generationMode === 'automated'
+                    ? 'bg-white text-black'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                AUTOMATED
+                <span className="text-[10px] bg-red-500 text-white px-1 rounded">BETA</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Action Buttons */}
         <div className="flex gap-4">
-          <button
-            onClick={copyToClipboard}
-            className={`flex-1 eden-button py-4 flex items-center justify-center text-lg ${
-              copiedToClipboard ? 'bg-green-900/20 border-green-400' : ''
-            }`}
-          >
-            {copiedToClipboard ? (
-              <>
-                <CheckCircle className="w-5 h-5 mr-2" />
-                READY FOR EDEN!
-              </>
-            ) : (
-              <>
-                <Copy className="w-5 h-5 mr-2" />
-                CREATE VIDEO PROMPT
-              </>
-            )}
-          </button>
+          {generationMode === 'manual' ? (
+            <>
+              <button
+                onClick={copyToClipboard}
+                className={`flex-1 eden-button py-4 flex items-center justify-center text-lg ${
+                  copiedToClipboard ? 'bg-green-900/20 border-green-400' : ''
+                }`}
+              >
+                {copiedToClipboard ? (
+                  <>
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    READY FOR EDEN!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-5 h-5 mr-2" />
+                    CREATE VIDEO PROMPT
+                  </>
+                )}
+              </button>
 
-          <a
-            href={`https://app.eden.art/agents/${selectedAgent}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="eden-button py-4 px-8 flex items-center justify-center"
-          >
-            <Sparkles className="w-5 h-5 mr-2" />
-            OPEN EDEN
-          </a>
+              <a
+                href={`https://app.eden.art/agents/${selectedAgent}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="eden-button py-4 px-8 flex items-center justify-center"
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                OPEN EDEN
+              </a>
+            </>
+          ) : (
+            <button
+              onClick={generateWithEden}
+              disabled={isGenerating}
+              className={`flex-1 eden-button py-4 flex items-center justify-center text-lg ${
+                isGenerating ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  GENERATING VIDEO...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  GENERATE VIDEO DIRECTLY
+                </>
+              )}
+            </button>
+          )}
         </div>
+
+        {/* Status Display */}
+        {generationStatus && (
+          <div className="border border-white/20 rounded p-4 bg-black/60">
+            <p className="helvetica-small text-white/80">
+              {generationStatus}
+            </p>
+          </div>
+        )}
+
+        {/* Error Display */}
+        {generationError && (
+          <div className="border border-red-500/20 rounded p-4 bg-red-900/10">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-400 mt-0.5" />
+              <p className="helvetica-small text-red-400">
+                {generationError}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Video Result */}
+        {generatedVideoUrl && (
+          <div className="space-y-3">
+            <div className="border border-green-500/20 rounded p-4 bg-green-900/10">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-green-400" />
+                <p className="helvetica-small-bold text-green-400">
+                  VIDEO READY!
+                </p>
+              </div>
+            </div>
+
+            <video
+              src={generatedVideoUrl}
+              controls
+              className="w-full rounded border border-white/10"
+              autoPlay
+              loop
+            />
+
+            <a
+              href={generatedVideoUrl}
+              download={`${selectedAgent}-${selectedMood}-video-${Date.now()}.mp4`}
+              className="w-full eden-button py-3 flex items-center justify-center"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              DOWNLOAD VIDEO
+            </a>
+          </div>
+        )}
 
         {/* Live Preview - Simplified */}
         <div className="border border-white/10 rounded p-4 bg-black/40">
