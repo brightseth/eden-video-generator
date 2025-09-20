@@ -4,10 +4,10 @@
  */
 
 export interface EdenTask {
-  id: string;
+  taskId: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
-  output?: {
-    output?: string;
+  creation?: {
+    uri?: string;
   };
   error?: string;
 }
@@ -122,8 +122,8 @@ class EdenAPIClient {
         onProgress(task.status);
       }
 
-      if (task.status === 'completed' && task.output?.output) {
-        return task.output.output;
+      if (task.status === 'completed' && task.creation?.uri) {
+        return task.creation.uri;
       }
 
       if (task.status === 'failed') {

@@ -39,13 +39,21 @@ export async function GET(
       );
     }
 
-    const task = await response.json();
+    const data = await response.json();
+    console.log('Task status response:', data);
 
-    // Map Eden status to our format
+    // Extract task data (API returns { task: {...} })
+    const task = data.task || data;
+
+    // Map Eden response to our format following hello-eden pattern
     const status = {
-      id: task.id,
+      taskId: task._id || task.taskId || task.id || taskId,
       status: task.status,
-      output: task.output,
+      creation: task.result && task.result.length > 0 && task.result[0].output
+        ? {
+            uri: task.result[0].output[0]?.url || task.result[0].output[0]?.uri
+          }
+        : undefined,
       error: task.error
     };
 

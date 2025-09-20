@@ -18,15 +18,15 @@ export async function POST(request: NextRequest) {
     console.log('Creating Eden task with body:', JSON.stringify(body, null, 2));
     console.log('Using Eden API URL:', `${EDEN_BASE_URL}/tasks/create`);
 
-    // Use jmill's v2 API format for video generation
+    // Use hello-eden's correct payload structure
     const edenPayload = {
       tool: "create",
       args: {
-        prompt: body.prompt,
-        output: "video",
-        model_preference: body.model_preference || "veo",
-        ...body.args
-      }
+        prompt: body.prompt || body.args?.text_input,
+        output: "video", // Always video for this endpoint
+        model_preference: body.model_preference || "veo"
+      },
+      makePublic: true // As per hello-eden example
     };
 
     console.log('Eden v2 payload:', JSON.stringify(edenPayload, null, 2));
@@ -52,9 +52,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let task;
+    let data;
     try {
-      task = JSON.parse(responseText);
+      data = JSON.parse(responseText);
     } catch (e) {
       console.error('Failed to parse Eden response:', e);
       return NextResponse.json(
@@ -63,8 +63,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('Task created successfully:', task.id);
-    return NextResponse.json({ taskId: task.id });
+    // Extract taskId following hello-eden pattern
+    const taskId = data.task?._id || data.taskId || data.task_id || data.id || data._id;
+
+    if (!taskId) {
+      console.error('No taskId found in response:', data);
+      return NextResponse.json(
+        { error: 'No taskId returned from Eden API' },
+        { status: 500 }
+      );
+    }
+
+    console.log('Task created successfully:', taskId);
+    return NextResponse.json({ taskId });
 
   } catch (error) {
     console.error('Error creating Eden task:', error);
