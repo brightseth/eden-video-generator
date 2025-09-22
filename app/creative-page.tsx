@@ -93,7 +93,6 @@ export default function CreativeVideoPromptGenerator() {
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState('');
   const [generationError, setGenerationError] = useState('');
 
-  const mood = CREATIVE_MOODS[selectedMood];
 
   const generateCreativePrompt = useCallback(() => {
     const agentVoice = AGENT_VOICES[selectedAgent];

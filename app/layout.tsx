@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Eden Agent Video Prompt Generator",
-  description: "Generate video prompts for Eden AI agents including Solienne, Miyomi, Geppetto, and Abraham",
+  title: "Eden AI Director Mode",
+  description: "AI-powered video generation with Eden agents - just describe your vision and let AI handle everything",
 };
 
 export default function RootLayout({
